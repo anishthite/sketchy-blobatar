@@ -187,7 +187,7 @@ export function poseVars(p: Pose): Record<string, string> {
   for (const k in IDENT) {
     // `heat` is the one channel the stylesheet never sees. Colour is not
     // composed in CSS — it is resolved here and emitted as the finished
-    // `--mo-head`/`--mo-eye`, so a `--mo-heat` declaration would be a variable
+    // `--mo-head`, so a `--mo-heat` declaration would be a variable
     // that looks live and is read by nothing. See `heatTint`.
     if (k === "heat") continue;
     const v = p[k as keyof Pose];

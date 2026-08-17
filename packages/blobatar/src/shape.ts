@@ -1,10 +1,10 @@
 /**
- * The single primitive.
+ * The regular primitive.
  *
  * |x/a|^n + |y/b|^n = 1 covers the whole part vocabulary: n=2 is an ellipse
- * (eyes, pupils), n≈4 a squircle (head, background), n→large a rectangle
- * (brows, mouth lines). One shape function, one continuous knob, so "head
- * shape" is a numeric trait rather than a set of hand-drawn alternatives.
+ * (eyes), n≈4 a squircle (head, background), n→large a rectangle
+ * (brows, mouth lines). Hand-drawn contours use `blobPath` below; the regular
+ * form still keeps symmetric features compact and continuously configurable.
  */
 
 export interface Superellipse {
@@ -20,6 +20,14 @@ export interface Superellipse {
 
 const r2 = (v: number) => {
   const s = Math.round(v * 100) / 100;
+  return Object.is(s, -0) ? "0" : String(s);
+};
+
+// The hand-drawn contours do not need typographic-curve precision. One decimal
+// is well below a screen pixel at normal avatar sizes and keeps an inline SVG
+// from paying for invisible digits on every wobble point.
+const r1 = (v: number) => {
+  const s = Math.round(v * 10) / 10;
   return Object.is(s, -0) ? "0" : String(s);
 };
 
@@ -68,10 +76,11 @@ export function superellipse({ cx, cy, rx, ry, n = 4, rot = 0 }: Superellipse): 
 
 /**
  * A quadratic arc, stroked — used only for smiles and frowns, where a closed
- * superellipse would need a boolean subtraction to get the same read.
+ * superellipse would need a boolean subtraction to get the same read. `lean`
+ * lets a smile sit a little off-centre instead of looking machine-perfect.
  */
-export function arc(cx: number, cy: number, w: number, depth: number): string {
-  return `M${r2(cx - w)} ${r2(cy)}Q${r2(cx)} ${r2(cy + depth)} ${r2(cx + w)} ${r2(cy)}`;
+export function arc(cx: number, cy: number, w: number, depth: number, lean = 0): string {
+  return `M${r2(cx - w)} ${r2(cy)}Q${r2(cx + lean)} ${r2(cy + depth)} ${r2(cx + w)} ${r2(cy)}`;
 }
 
 /**
@@ -96,13 +105,52 @@ export function blobPath(
 ): string {
   const n = radii.length;
   const t0 = (rot * Math.PI) / 180;
-  const p: [number, number][] = radii.map((m, i) => {
-    const a = t0 + (2 * Math.PI * i) / n;
-    return [cx + rx * m * Math.cos(a), cy + ry * m * Math.sin(a)];
-  });
+  return spline(
+    radii.map((m, i) => {
+      const a = t0 + (2 * Math.PI * i) / n;
+      return [cx + rx * m * Math.cos(a), cy + ry * m * Math.sin(a)] as [number, number];
+    }),
+  );
+}
+
+/**
+ * A superellipse with an ink wobble baked into its contour.
+ *
+ * `superellipse()` is exact and deliberately regular; this version samples the
+ * same implicit curve, moves each sample a little radially, and
+ * joins them with the same smooth spline used by `blobPath`. The result keeps a
+ * boxy blob recognisably boxy and a round blob recognisably round, while losing
+ * the too-perfect edge a generated avatar otherwise has.
+ */
+export function roughSuperellipse(
+  { cx, cy, rx, ry, n = 4, rot = 0 }: Superellipse,
+  radii: number[],
+): string {
+  const turn = (rot * Math.PI) / 180;
+  return spline(
+    radii.map((m, i) => {
+      const a = (2 * Math.PI * i) / radii.length;
+      const cos = Math.cos(a);
+      const sin = Math.sin(a);
+      // The distance from a superellipse centre at this angle. At n=2 this is
+      // 1, so this naturally becomes a gently wobbly ellipse.
+      const unit = Math.pow(Math.abs(cos) ** n + Math.abs(sin) ** n, -1 / n) * m;
+      const x = rx * unit * cos;
+      const y = ry * unit * sin;
+      return [
+        cx + x * Math.cos(turn) - y * Math.sin(turn),
+        cy + x * Math.sin(turn) + y * Math.cos(turn),
+      ] as [number, number];
+    }),
+  );
+}
+
+/** A closed Catmull–Rom contour through points already in viewBox coordinates. */
+function spline(p: [number, number][]): string {
+  const n = p.length;
 
   const at = (i: number) => p[((i % n) + n) % n]!;
-  let d = `M${r2(at(0)[0])} ${r2(at(0)[1])}`;
+  let d = `M${r1(at(0)[0])} ${r1(at(0)[1])}`;
 
   for (let i = 0; i < n; i++) {
     const [x0, y0] = at(i - 1);
@@ -110,9 +158,9 @@ export function blobPath(
     const [x2, y2] = at(i + 1);
     const [x3, y3] = at(i + 2);
     d +=
-      `C${r2(x1 + (x2 - x0) / 6)} ${r2(y1 + (y2 - y0) / 6)}` +
-      ` ${r2(x2 - (x3 - x1) / 6)} ${r2(y2 - (y3 - y1) / 6)}` +
-      ` ${r2(x2)} ${r2(y2)}`;
+      `C${r1(x1 + (x2 - x0) / 6)} ${r1(y1 + (y2 - y0) / 6)}` +
+      ` ${r1(x2 - (x3 - x1) / 6)} ${r1(y2 - (y3 - y1) / 6)}` +
+      ` ${r1(x2)} ${r1(y2)}`;
   }
 
   return d + "Z";

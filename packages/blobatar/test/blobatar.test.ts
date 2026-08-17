@@ -39,12 +39,20 @@ describe("output", () => {
     const sizes = SEEDS.map(s => blobatar(s).length);
     expect(Math.max(...sizes)).toBeLessThan(2600);
   });
+
+  test("renders an outlined face rather than a filled mascot", () => {
+    const svg = blobatar("line-art", { background: false });
+    expect(svg).toContain('fill="none"');
+    expect(svg).toContain('stroke-width="3.4"');
+    expect(svg).toContain('stroke-linecap="round"');
+  });
 });
 
 describe("options", () => {
   test("size adds explicit dimensions", () => {
     expect(blobatar("a", { size: 64 })).toContain('width="64" height="64"');
-    expect(blobatar("a")).not.toContain("width=");
+    // Match an SVG dimension, not a stroke-width declaration.
+    expect(blobatar("a")).not.toContain(' width="');
   });
 
   test("background toggles the backdrop plate", () => {

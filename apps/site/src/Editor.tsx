@@ -6,6 +6,7 @@ import { ShapePicker, TonePicker } from "@/components/editor/pickers";
 import { Segmented, SegmentedItem } from "@/components/ui/segmented";
 import { Snippet } from "@/components/ui/snippet";
 import { Install } from "@/components/ui/install";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { AXES, GROUPS, applies, round3, type Axis, type Group, type Shape } from "@/editor/axes";
 import { blobLayout, resolved } from "@/editor/resolved";
 import { snippet, type Api, type Motion } from "@/editor/snippet";
@@ -108,7 +109,10 @@ export function Editor() {
           <span className="group-hover:-translate-x-0.5 inline-block transition-transform">←</span>
           blobatar
         </a>
-        <span className="text-muted font-mono text-xs lowercase">editor</span>
+        <div className="flex items-center gap-2">
+          <span className="text-muted font-mono text-xs lowercase">editor</span>
+          <ThemeToggle />
+        </div>
       </header>
 
       {/*

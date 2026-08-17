@@ -77,8 +77,8 @@ declare global {
      *  the second and is supposed to *look* like the first. */
     posed: Eye[];
     base: Eye[];
-    /** `[head, eye]` as the static path paints them, tint included. */
-    fill: [string, string];
+    /** The static path's ink colour, including a pose tint. */
+    fill: string;
   }[];
 }
 
@@ -133,11 +133,20 @@ function mount(html: string, vars?: Record<string, string>) {
   return svg;
 }
 
-/** Petals are `<circle>`, so `path` finds the core first and the eyes last,
- *  whatever the silhouette. */
-const paths = (svg: SVGSVGElement) => [
-  ...svg.querySelectorAll<SVGPathElement>("g[fill] path"),
-];
+/**
+ * The visible geometry the composition probe compares: core, left dot, right
+ * dot. The face group also contains a smile, so positional selection needs to
+ * name the two marks rather than assume its final path is an eye.
+ */
+function paths(svg: SVGSVGElement) {
+  const body = svg.querySelector<SVGPathElement>('g[stroke-width="3.4"] path')!;
+  const face = svg.querySelector<SVGGElement>('g[stroke-width="2.8"]')!;
+  const marks = [...face.querySelectorAll<SVGPathElement>("path")];
+  return [body, marks[0]!, marks[1]!];
+}
+
+/** The small dot drawn inside the larger eye envelope that layout exposes. */
+const dot = (e: Eye): Eye => ({ ...e, rx: e.rx * 0.8, ry: e.ry * 0.32 });
 
 /**
  * Twelve points around one capsule's outline, in screen coordinates.
@@ -214,8 +223,8 @@ async function checkGeometry() {
     row[0] = Math.max(row[0]!, dBody);
 
     for (let i = 0; i < 2; i++) {
-      const sa = outline(pa.slice(-2)[i]!, c.posed[i]!);
-      const sb = outline(pb.slice(-2)[i]!, c.base[i]!);
+      const sa = outline(pa[i + 1]!, dot(c.posed[i]!));
+      const sb = outline(pb[i + 1]!, dot(c.base[i]!));
       // In CSS pixels at 4× the viewBox, so a pixel of drift is a quarter of a
       // viewBox unit.
       const d = Math.max(
@@ -541,8 +550,8 @@ async function checkShake() {
  * E — the two renderings of one *colour* agree.
  *
  * Check A's argument, one axis over. A hot pose resolves its tint twice: into
- * `fill` attributes on the static path, and into `--mo-head`/`--mo-eye` for the
- * stylesheet on the animated one. Nothing forces those to match, and a rule that
+ * `fill` attributes on the static path, and into `--mo-head` for the stylesheet
+ * on the animated one. Nothing forces those to match, and a rule that
  * silently loses — a specificity slip, a `var()` with nothing behind it making
  * `fill` inherit black — looks completely fine to `bun test`, which only ever
  * sees the string.
@@ -558,19 +567,19 @@ async function checkTint() {
   for (const c of globalThis.CASES) {
     const b = mount(`<g class="${c.cls}">${c.inner}</g>`, c.vars);
     await frame();
-    const groups = [
-      b.querySelector<SVGGElement>(".mo-bob > g:not(.mo-eyes)")!,
-      b.querySelector<SVGGElement>(".mo-eyes")!,
+    const marks: [Element, "fill" | "stroke", string, string][] = [
+      [b.querySelector<SVGGElement>(".mo-head")!, "stroke", c.fill, "outline"],
+      [b.querySelector<SVGGElement>(".mo-eyes")!, "fill", c.fill, "face"],
     ];
-    groups.forEach((g, i) => {
-      const got = rgb(getComputedStyle(g).fill);
-      const want = rgb(c.fill[i]!);
+    marks.forEach(([el, property, expected, label]) => {
+      const got = rgb(getComputedStyle(el).getPropertyValue(property));
+      const want = rgb(expected);
       const d = Math.max(...got.map((v, k) => Math.abs(v - want[k]!)));
       if (d > worst) {
         worst = d;
         worstCase =
-          `${c.name} on ${c.seed}, ${i ? "eyes" : "body"} — ` +
-          `static ${c.fill[i]}, animated ${getComputedStyle(g).fill}`;
+          `${c.name} on ${c.seed}, ${label} — ` +
+          `static ${expected}, animated ${getComputedStyle(el).getPropertyValue(property)}`;
       }
     });
     b.remove();
@@ -582,7 +591,7 @@ async function checkTint() {
     "E static and animated agree on colour, tint included",
     worst === 0,
     worst === 0
-      ? "every pose, both groups, byte-identical channels"
+      ? "every pose's outline and face have byte-identical channels"
       : `off by ${worst}/255 — ${worstCase}`,
   );
 }
@@ -779,7 +788,7 @@ async function checkDirections() {
  * against the geometry the engine paints, which is the thing under test.
  */
 async function checkBlink() {
-  /** The painted box of one shape, from `elementFromPoint` hits alone. */
+  /** The painted box of one eye path, from `elementFromPoint` hits alone. */
   const painted = (el: Element, box: DOMRect) => {
     let x0 = Infinity;
     let y0 = Infinity;
@@ -787,7 +796,8 @@ async function checkBlink() {
     let y1 = -Infinity;
     for (let y = box.top; y < box.bottom; y += 2)
       for (let x = box.left; x < box.right; x += 2) {
-        if (document.elementFromPoint(x, y) !== el) continue;
+        const hit = document.elementFromPoint(x, y);
+        if (hit !== el) continue;
         x0 = Math.min(x0, x);
         x1 = Math.max(x1, x);
         y0 = Math.min(y0, y);
@@ -851,9 +861,11 @@ async function checkBlink() {
 
   report(
     "H a blink closes the eye without moving it, under every pose",
-    // Two hit-test grid steps of slack, and no more: the failure this guards
-    // was 111px on `happy` and 128px on `mad` of a 400px blobatar.
-    rows.every(([, moved, closed]) => moved <= 4 && closed > 4),
+    // Three hit-test grid steps plus the fractional paint edge. The smaller
+    // hand-drawn dots close by 3–4px under an already-flattened pose; the
+    // failure this guards was 111px on `happy` and 128px on `mad` of a 400px
+    // blobatar.
+    rows.every(([, moved, closed]) => moved <= 5.5 && closed > 2),
     rows
       .map(
         ([n, moved, closed]) =>

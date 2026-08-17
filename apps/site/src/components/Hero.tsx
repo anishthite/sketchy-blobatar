@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { Snippet } from "@/components/ui/snippet";
 import { Install } from "@/components/ui/install";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { EggMark, eggFor } from "@/eggs";
 import { cn } from "@/lib/utils";
 
@@ -245,6 +246,7 @@ export function Hero() {
         have. The name lives in the tooltip and the accessible label.
       */}
       <div className="absolute top-6 right-6 z-10 flex items-center gap-1 lg:top-8">
+        <ThemeToggle />
         <SocialLink href="https://github.com/Alain00/blobatar" label="blobatar on GitHub">
           <GitHubIcon />
         </SocialLink>
@@ -260,8 +262,8 @@ export function Hero() {
           </h1>
 
           <p className="text-muted mt-5 max-w-md text-balance text-base leading-relaxed">
-            Deterministic geometric blobatars from any string. No dependencies,
-            about 3.7&nbsp;KB.
+            Deterministic outlined blobatars from any string. No dependencies,
+            about 4&nbsp;KB.
           </p>
         </div>
 
@@ -491,7 +493,7 @@ export function Hero() {
                 {/*
                   The expression picker is the same blobatar wearing each pose,
                   not a select. A pose is a *look*, and the only honest label
-                  for a look is the look — "mad" on two capsule eyes means
+                  for a look is the look — "mad" on two dot eyes means
                   nothing until you have seen it. Seeded identically to the
                   hero, so the row reads as one creature's range rather than
                   four strangers.

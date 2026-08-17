@@ -1,6 +1,6 @@
 # blobatar
 
-Deterministic geometric blobatars from any string. No dependencies, ~3.7 KB gzipped.
+Deterministic outlined blobatars from any string. No dependencies, ~4 KB gzipped.
 
 ```ts
 import { blobatar } from "blobatar";
@@ -27,10 +27,11 @@ el.style.backgroundImage = `url("${blobatarUri(user.id)}")`;
 
 ## Shapes
 
-A soft body and two capsule eyes, drawn from a vocabulary of six silhouettes:
+An irregular outline, two small eyes and a quiet smile, drawn from a vocabulary
+of six silhouettes:
 `round`, `organic`, `boxy`, `nub`, `cloud`, `sun`. Weighted so rounds and pebbles
-are everyday and suns are a find. Transparent backdrop by default; the body is
-the blobatar.
+are everyday and suns are a find. Transparent backdrop by default; the outline
+is the blobatar.
 
 The main entry also carries the palette and trait utilities. If all you do is
 render, import the renderer on its own and save about a kilobyte:
@@ -193,13 +194,11 @@ blobatar(name, { expression: happy }); // static, posed, no morph
 `idle` renders byte-identical markup to omitting the option, so adding this
 moved no existing blobatar.
 
-The pose moves parts the blobatar already has — eyes and body — and never adds a
-mark, so a blob grows no mouth when it is happy. That ceiling is real and worth
-knowing before you reach for it: `happy` reads unmistakably, while `sad` and
-`mad` read as clearly different from idle and from each other without announcing
-their emotion the way a mouth would. Two capsules and a soft body only go so
-far. See [docs/expression-spec.md](./docs/expression-spec.md) for what carries
-signal and what does not.
+The pose moves parts the blobatar already has — eyes and body — and never adds
+or removes a mark. The smile stays as a visual anchor while `happy`, `sad` and
+`mad` make the eye pair read clearly differently from idle and from each other.
+See [docs/expression-spec.md](./docs/expression-spec.md) for what carries signal
+and what does not.
 
 Expressions are decorative and do not reach assistive technology: `title` names
 who the blobatar is and does not change with the pose. Under reduced motion the
@@ -220,9 +219,10 @@ lopsided pebbles with no noise function. Catmull-Rom interpolates its points
 exactly, which is what makes the radii mean what they say and keeps containment
 predictable.
 
-**Overlapping fills replace boolean geometry.** Clouds, suns and nubs are just
-extra circles drawn in the same `<g fill>` behind the core. They union visually
-for free — no path arithmetic, no clip paths, no element ids.
+**Layered contours avoid boolean geometry.** Clouds, suns and nubs are extra
+circles drawn behind the core outline. Their repeated loops are intentional,
+giving the silhouettes a hand-drawn scallop without path arithmetic, clip paths
+or element ids.
 
 **Eye dimensions are fractions of the body radius**, not absolute units. Bodies
 range from 22 to 38 units depending on how much room the decoration needs, and
@@ -232,7 +232,7 @@ Colors are resolved from OKLCh to hex at render time rather than emitted as
 `oklch()`, because server-side rasterizers largely do not support it and blobatars
 get rasterized server-side constantly.
 
-Whole blobatars land at 590–1060 bytes of markup.
+Whole blobatars land at about 1.1–1.6 KB of markup.
 
 ## Development
 
@@ -259,5 +259,5 @@ the rarer silhouettes would otherwise show up a handful of times per page, too
 few to tune against.
 
 `test/geometry.test.ts` covers what eyeballing cannot: that no name anywhere in
-the space puts an eye off the body, fuses two capsules together, detaches a
+the space puts an eye off the body, collides the two eye envelopes, detaches a
 petal, or pushes geometry outside the frame.

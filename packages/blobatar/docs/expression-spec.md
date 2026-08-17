@@ -249,8 +249,8 @@ needs no origin at all.
 **A third serializer, for the one channel that is not geometry.** `tint()`
 returns the palette the pose wears. The static path puts it in the `fill`
 attributes; the animated path cannot, because nothing in `parts.inner` may vary
-with the expression, so it goes out as `--mo-head`/`--mo-eye` and two `fill`
-rules in the stylesheet pick it up. Two serializations of one decision, which is
+with the expression, so it goes out as `--mo-head` and two paint rules in the
+stylesheet pick it up. Two serializations of one decision, which is
 why `scripts/probe-compose.ts` grew check E to compare them.
 
 All three ride on the expression value rather than being imported, so a consumer
@@ -438,10 +438,12 @@ split is the rule working rather than an exception to it:
 
 ## 9. Considered and rejected
 
-**A mouth, or brows, hidden at idle.** Would solve §2 outright. Rejected because
-those elements ship in the markup of every animated blobatar whether or not an
-expression ever fires, against a 590–1060 byte figure — and because a blob with
-a mouth is a different product, not a new pose.
+**A mouth that appears for a pose, or brows hidden at idle.** Would solve §2
+outright. Rejected because those elements ship in the markup of every animated
+blobatar whether or not an expression ever fires, against a roughly 1.1–1.6 KB
+figure — and because a pose-specific mouth is a different product, not a new
+pose. The fixed smile in the baseline mark is identity, not an expression
+channel.
 
 **Seeded expression strength.** The idle layer's seeded phases exist because
 ambient motion in unison reads as a mechanism rather than a crowd. That argument
@@ -580,11 +582,11 @@ fill mid-morph. A plain `transition: fill` is symmetric for nothing.
 
 The fills are `fill="#…"` presentation attributes inside `parts.inner`, which
 CSS cannot read and which nothing in `parts.inner` may vary with the expression.
-So the stylesheet restates `fill` from `--mo-head`/`--mo-eye`, which the renderer
-emits on every animated `blob` — tinted when the pose tints, and byte-identical
-to the attribute when it does not.
+So the stylesheet restates paint from `--mo-head`, which the renderer emits on
+every animated `blob` — tinted when the pose tints, and byte-identical to the
+attribute when it does not.
 
-Emitted unconditionally, at ~30 B per animated blobatar, because a `var()` with
+Emitted unconditionally, at ~16 B per animated blobatar, because a `var()` with
 nothing behind it makes `fill` invalid at computed-value time, and `fill` is
 inherited: the body would render black. That is the cost of the rules being
 always-valid rather than class-gated, and class-gating is what reintroduces the

@@ -1,6 +1,6 @@
 # Blobatar
 
-A library that turns any string into a deterministic geometric blobatar, plus the
+A library that turns any string into a deterministic outlined blobatar, plus the
 apps that exercise it — a landing page and a tuning grid.
 
 ## Language
