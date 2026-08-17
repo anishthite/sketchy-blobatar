@@ -79,7 +79,7 @@ several hundred blobatars on one page cannot produce id collisions.
 | `contrast`   | `true`      | Enforce the contrast floors.                                            |
 | `title`      | —           | Adds a `<title>` for screen readers.                                    |
 | `animate`    | —           | `"hover"` or `"always"`. See below — it changes how the blobatar renders. |
-| `expression` | `"idle"`    | `"happy"`, `"sad"` or `"mad"`. See below.                               |
+| `expression` | `"idle"`    | An imported pose value. See below.                                        |
 
 ## Configuring
 
@@ -157,7 +157,8 @@ callers will never use. If you need animated markup without React, open an issue
 ## Expressions
 
 A pose the blobatar holds until you change it — `idle` (the default), `happy`,
-`sad`, `mad`. Setting one morphs from whatever it was wearing.
+`sad`, `mad`, `sleepy`, `excited`, `suspicious`, or `bashful`. Setting one
+morphs from whatever it was wearing.
 
 Expressions are **imported as values, not named as strings**, so you ship the
 ones you use and nothing else:
@@ -195,8 +196,8 @@ blobatar(name, { expression: happy }); // static, posed, no morph
 moved no existing blobatar.
 
 The pose moves parts the blobatar already has — eyes and body — and never adds
-or removes a mark. The smile stays as a visual anchor while `happy`, `sad` and
-`mad` make the eye pair read clearly differently from idle and from each other.
+or removes a mark. The smile stays as a visual anchor while the mood presets
+make the eye pair read clearly differently from idle and from each other.
 See [docs/expression-spec.md](./docs/expression-spec.md) for what carries signal
 and what does not.
 

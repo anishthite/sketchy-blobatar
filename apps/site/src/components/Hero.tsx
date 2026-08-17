@@ -1,7 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Blobatar } from "blobatar/react";
 import type { BlobatarOptions } from "blobatar";
-import { happy, idle, mad, sad, type Expression } from "blobatar/expression";
+import {
+  bashful,
+  excited,
+  happy,
+  idle,
+  mad,
+  sad,
+  sleepy,
+  suspicious,
+  type Expression,
+} from "blobatar/expression";
 import { Segmented, SegmentedItem } from "@/components/ui/segmented";
 import {
   Popover,
@@ -64,6 +74,10 @@ const POSES = [
   { name: "happy", value: happy },
   { name: "sad", value: sad },
   { name: "mad", value: mad },
+  { name: "sleepy", value: sleepy },
+  { name: "excited", value: excited },
+  { name: "suspicious", value: suspicious },
+  { name: "bashful", value: bashful },
 ] as const;
 
 type Pose = (typeof POSES)[number];
@@ -495,11 +509,11 @@ export function Hero() {
                   not a select. A pose is a *look*, and the only honest label
                   for a look is the look — "mad" on two dot eyes means
                   nothing until you have seen it. Seeded identically to the
-                  hero, so the row reads as one creature's range rather than
-                  four strangers.
+                  hero, so the grid reads as one creature's range rather than
+                  a set of strangers.
                 */}
-                <Field label="expression">
-                  <div className="grid grid-cols-4 gap-1" role="group" aria-label="Expression">
+                <Field label="mood">
+                  <div className="grid grid-cols-4 gap-1" role="group" aria-label="Mood">
                     {POSES.map((p) => (
                       <button
                         key={p.name}

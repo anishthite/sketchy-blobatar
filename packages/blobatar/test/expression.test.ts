@@ -1,12 +1,16 @@
 import { describe, expect, test } from "bun:test";
 import { blobatar, _layout, _parts } from "../src/blobatar";
 import {
+  bashful,
   bakePose,
+  excited,
   happy,
   idle,
   mad,
   poseVars,
   sad,
+  sleepy,
+  suspicious,
   type Expression,
 } from "../src/expression";
 import * as blob from "../src/styles/blob";
@@ -30,6 +34,10 @@ const NAMED: [string, Expression][] = [
   ["happy", happy],
   ["sad", sad],
   ["mad", mad],
+  ["sleepy", sleepy],
+  ["excited", excited],
+  ["suspicious", suspicious],
+  ["bashful", bashful],
 ];
 const ALL: [string, Expression][] = [["idle", idle], ...NAMED];
 
