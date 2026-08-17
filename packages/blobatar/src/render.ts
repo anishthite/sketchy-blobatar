@@ -4,6 +4,9 @@ import type { Expression, Posable } from "./expression";
 import { superellipse } from "./shape";
 import { traits, type TraitOverrides, type Traits } from "./traits";
 
+/** The drawn default and the filled style available for existing designs. */
+export type BlobatarVariant = "outlined" | "original";
+
 export interface BlobatarOptions {
   /** Emits width/height attributes. Omit to let CSS size it (the viewBox always scales). */
   size?: number;
@@ -15,6 +18,11 @@ export interface BlobatarOptions {
   hue?: number;
   /** Locks the tone as a 0–1 position in the swatch set. */
   tone?: number;
+  /**
+   * Chooses the drawing treatment. `"outlined"` is the default; `"original"`
+   * restores the filled version without changing the name-derived geometry.
+   */
+  variant?: BlobatarVariant;
   /**
    * Pins individual traits, so the name drives only what you leave out.
    *
@@ -91,14 +99,14 @@ export interface BlobatarOptions {
 }
 
 export interface Style<L> {
-  layout(t: Traits): L;
+  layout(t: Traits, variant?: BlobatarVariant): L;
   /**
    * `mo` is set when animating, absent otherwise. It is a flag rather than the
    * root class it used to be: the root `<g>` is the caller's now, because a
    * class inside this string is a class inside `dangerouslySetInnerHTML`. See
    * `makeParts`.
    */
-  render(l: L, p: Palette, mo?: boolean): string;
+  render(l: L, p: Palette, mo?: boolean, variant?: BlobatarVariant): string;
   background: boolean | "square" | "circle" | "squircle";
 }
 
@@ -226,14 +234,14 @@ export function makeBlobatar<L>(style: Style<L>) {
     const { t, palette } = resolve(name, opts);
     const p = tinted(palette, opts.expression);
     const dim = opts.size ? ` width="${opts.size}" height="${opts.size}"` : "";
-    const pose = posed(style.layout(t), opts);
+    const pose = posed(style.layout(t, opts.variant), opts);
     // The pose wraps the figure but not the backdrop, for the same reason the
     // motion groups sit inside `style.render` — a plate that scales and leans
     // with the creature stops being a plate.
     const body =
       label(opts) +
       plate(backdrop(style, opts, p)) +
-      wrap(style.render(pose.l, p), pose.wrap);
+      wrap(style.render(pose.l, p, undefined, opts.variant), pose.wrap);
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"${dim}>${body}</svg>`;
   };
 }
@@ -268,14 +276,14 @@ export function makeParts<L>(style: Style<L>) {
   ) => {
     const { t, palette: p } = resolve(name, opts);
     const mo = motion?.(t, p);
-    const pose = posed(style.layout(t), opts, mo);
+    const pose = posed(style.layout(t, opts.variant), opts, mo);
 
     return {
       /** Goes on the root `<g>`, which the caller renders. */
       cls: mo?.cls,
       bg: backdrop(style, opts, p),
       /** Everything below the root `<g>`. Free of both of the above. */
-      inner: wrap(style.render(pose.l, p, !!mo), pose.wrap),
+      inner: wrap(style.render(pose.l, p, !!mo, opts.variant), pose.wrap),
       vars: mo?.vars,
     };
   };

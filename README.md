@@ -55,6 +55,9 @@ would otherwise have produced:
 ```tsx
 <Blobatar name={user.email} background="circle" hue={210} size={48} />;
 
+// Restore the original filled treatment while preserving the same seed.
+<Blobatar name={user.email} variant="original" size={48} />;
+
 // Always a sun with wide eyes — colour and everything else still per name.
 blobatar(user.email, { traits: { shape: 0.95, "eye.ratio": 0 } });
 ```

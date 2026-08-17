@@ -1,11 +1,17 @@
 import { motionVars, rootClass, type Animate } from "./animate";
 import type { Palette } from "./color";
 import type { Expression } from "./expression";
-import { makeBlobatar, makeParts, resolve, type BlobatarOptions } from "./render";
+import {
+  makeBlobatar,
+  makeParts,
+  resolve,
+  type BlobatarOptions,
+  type BlobatarVariant,
+} from "./render";
 import type { Traits } from "./traits";
 import * as blob from "./styles/blob";
 
-export type { BlobatarOptions, Animate, Expression };
+export type { BlobatarOptions, BlobatarVariant, Animate, Expression };
 
 /**
  * Renders a deterministic blobatar as SVG markup.
@@ -25,7 +31,7 @@ export const blobatar = makeBlobatar(blob);
  * animating, the pose is custom properties on the same element the timing goes
  * on, not geometry. `poseVars` returns nothing at all for `"idle"`.
  */
-const motion = (mode: Animate, e?: Expression) => (t: Traits, p: Palette) => {
+const motion = (mode: Animate, e?: Expression, variant?: BlobatarVariant) => (t: Traits, p: Palette) => {
   // `vars` is also how we know whether to set `mo-expr`: an expression that
   // moves nothing emits nothing, so an empty object *is* idle. That keeps the
   // class in step with the pose without a second notion of "is this idle".
@@ -53,6 +59,9 @@ const motion = (mode: Animate, e?: Expression) => (t: Traits, p: Palette) => {
       // `transition: fill` in both directions instead of a custom property that
       // disappears mid-morph on the way out.
       "--mo-head": c.head!,
+      // The original filled treatment keeps its face in the palette's contrast
+      // colour, whereas the outlined treatment draws every mark in the ink.
+      ...(variant === "original" ? { "--mo-eye": c.eye! } : {}),
       ...pose,
     },
   };
@@ -68,7 +77,7 @@ export function _parts(name: string, opts: BlobatarOptions = {}) {
   return makeParts(blob)(
     name,
     opts,
-    opts.animate && motion(opts.animate, opts.expression),
+    opts.animate && motion(opts.animate, opts.expression, opts.variant),
   );
 }
 
@@ -82,7 +91,7 @@ export function _parts(name: string, opts: BlobatarOptions = {}) {
  */
 export function _layout(name: string, opts: BlobatarOptions = {}) {
   const { t, palette } = resolve(name, opts);
-  const l = blob.layout(t);
+  const l = blob.layout(t, opts.variant);
   // Posed here rather than by the caller, so the geometry tests assert against
   // the same numbers the static renderer draws. Only the baked half comes back:
   // the body-level `transform` is the renderer's business, and the test that

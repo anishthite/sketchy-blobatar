@@ -1,7 +1,7 @@
-import { makeBlobatar, type BlobatarOptions } from "./render";
+import { makeBlobatar, type BlobatarOptions, type BlobatarVariant } from "./render";
 import * as style from "./styles/blob";
 
-export type { BlobatarOptions };
+export type { BlobatarOptions, BlobatarVariant };
 export type { Shape } from "./styles/blob";
 export type { TraitOverrides } from "./traits";
 

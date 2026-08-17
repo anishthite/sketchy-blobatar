@@ -304,12 +304,23 @@
   transition: stroke var(--mo-morph) var(--mo-morph-ease);
 }
 
-.mo-eyes {
+.mo-eyes:not(.mo-original-eyes) {
   fill: var(--mo-head);
   stroke: var(--mo-head);
   transition:
     fill var(--mo-morph) var(--mo-morph-ease),
     stroke var(--mo-morph) var(--mo-morph-ease);
+}
+
+/* The original filled style has two paint channels: body and face. */
+.mo-original-head {
+  fill: var(--mo-head);
+  transition: fill var(--mo-morph) var(--mo-morph-ease);
+}
+
+.mo-original-eyes {
+  fill: var(--mo-eye);
+  transition: fill var(--mo-morph) var(--mo-morph-ease);
 }
 
 /**

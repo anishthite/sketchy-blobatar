@@ -61,8 +61,11 @@ const ENTRIES: {
     // a single regular contour. The extra 298 B gzipped is the visible feature,
     // not a new dependency or runtime path; the neighbouring entries stay
     // proportionally tight.
+    // Raised from 4025 for the optional original filled treatment. Both styles
+    // share traits, palette resolution and animation plumbing; the 182 B is the
+    // alternate drawing branch and preserves a migration path for existing art.
     name: "blob only",
-    budget: 4025,
+    budget: 4250,
     external: [] as string[],
     source: `import { blobatar } from "../../src/blob";
              globalThis.x = blobatar(String(globalThis.seed));`,
@@ -71,14 +74,14 @@ const ENTRIES: {
     // The barrel. Costs more than `blob only` above because it also carries the
     // colour and trait utilities, which a consumer who only renders never touches.
     name: "barrel",
-    budget: 4025,
+    budget: 4250,
     external: [],
     source: `import { blobatar } from "../../src/index";
              globalThis.x = blobatar(String(globalThis.seed));`,
   },
   {
     name: "uri",
-    budget: 4125,
+    budget: 4350,
     external: [],
     source: `import { blobatarUri } from "../../src/uri";
              globalThis.x = blobatarUri(String(globalThis.seed));`,
@@ -102,7 +105,7 @@ const ENTRIES: {
     // or not, so the stylesheet's `fill` rules always resolve to something
     // correct — a `var()` with nothing behind it makes `fill` inherit black.
     name: "react",
-    budget: 4975,
+    budget: 5250,
     external: ["react"],
     source: `import { Blobatar } from "../../src/react";
              globalThis.x = Blobatar;`,
@@ -114,7 +117,7 @@ const ENTRIES: {
     // Measured: +343 B for the first expression (the shared serializer and bake,
     // paid once) and +36 B for each one after it. Importing all three is 4098.
     name: "blob + happy",
-    budget: 4350,
+    budget: 4600,
     external: [],
     source: `import { blobatar } from "../../src/blob";
              import { happy } from "../../src/expression";

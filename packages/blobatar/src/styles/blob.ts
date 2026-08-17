@@ -1,5 +1,6 @@
 import type { Palette } from "../color";
-import { arc, blobPath, roughSuperellipse } from "../shape";
+import type { BlobatarVariant } from "../render";
+import { arc, blobPath, roughSuperellipse, superellipse } from "../shape";
 import type { Traits } from "../traits";
 
 /**
@@ -58,7 +59,7 @@ const WOBBLE: Record<Shape, number> = {
   nub: 0.11,
 };
 
-export function layout(t: Traits) {
+export function layout(t: Traits, variant: BlobatarVariant = "outlined") {
   const shape = shapeOf(t("shape"));
   const r = t.num("body.r", 31, 38) * CORE[shape];
   const rx = r;
@@ -71,12 +72,13 @@ export function layout(t: Traits) {
     ry,
     n: shape === "boxy" ? t.num("body.n", 3.4, 6) : t.num("body.n", 1.9, 2.5),
     rot: shape === "boxy" ? t.num("body.rot", -20, 20) : 0,
-    // The same keyed values drive the outline's wobble on every silhouette.
-    // A box gets only a little movement, preserving its broad corners; a pebble
-    // gets enough to lose any sense that a shape tool drew it.
+    // The original filled version only spent these radii on organic bodies and
+    // clouds, at a uniform ±16%. The outlined style gives each silhouette its
+    // own contour character. Keeping both calculations keyed to the same traits
+    // lets the variant change treatment, not identity.
     radii: Array.from(
       { length: t.int("body.pts", 6, 8) },
-      (_, i) => 1 + t.jitter(`body.r${i}`, WOBBLE[shape]),
+      (_, i) => 1 + t.jitter(`body.r${i}`, variant === "original" ? 0.16 : WOBBLE[shape]),
     ),
     smile: {
       x: t.jitter("body.r0", 1.1),
@@ -242,13 +244,22 @@ export type Layout = ReturnType<typeof layout>;
  * is the one element whose class varies with the expression, and the caller
  * renders it so that variation never touches this string. See `makeParts`.
  */
-export function render(l: Layout, p: Palette, mo?: boolean): string {
+export function render(
+  l: Layout,
+  p: Palette,
+  mo?: boolean,
+  variant: BlobatarVariant = "outlined",
+): string {
   const b = l.body;
-  // Every core carries some ink wobble. `roughSuperellipse` retains the
-  // superellipse's squareness, so a box stays a box rather than collapsing into
-  // another generic pebble; the same seeded contour gives the whole family one
-  // hand-drawn voice.
-  const core = roughSuperellipse(b, b.radii);
+  const original = variant === "original";
+  // Every outlined core carries some ink wobble. The original filled design
+  // kept only organic bodies and clouds irregular, and retained exact circles
+  // for its petals, which is the visual treatment the style switch restores.
+  const core = original
+    ? l.shape === "organic" || l.shape === "cloud"
+      ? blobPath(b.cx, b.cy, b.rx, b.ry, b.radii, l.shape === "cloud" ? 0 : b.rot, 2)
+      : superellipse(b)
+    : roughSuperellipse(b, b.radii);
 
   const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -289,6 +300,13 @@ export function render(l: Layout, p: Palette, mo?: boolean): string {
   // declarations and the shape underneath keeps the loops. ~8 B per eye; see
   // `.mo-eye` in `motion.css` for the measurement.
   const eye = (e: Layout["eyes"][number], i: number) => {
+    if (original) {
+      const path = `<path d="${superellipse(e)}"/>`;
+      return mo
+        ? `<g class="mo-eye" style="--mo-wrap:${i ? 1 : -1};--mo-lean:${r2(e.rot)};transform-origin:${r2(e.cx)}px ${r2(e.cy)}px">${path}</g>`
+        : path;
+    }
+
     /*
      * The layout keeps the generous portrait eye envelope: expressions use it
      * for their scale and tilt channels, and the containment maths continues to
@@ -316,14 +334,25 @@ export function render(l: Layout, p: Palette, mo?: boolean): string {
       : path;
   };
 
-  const body =
+  const body = original
+    ? `<g fill="${p.head}"${mo ? ` class="mo-original-head"` : ""}>` +
+      // Decoration first so the core sits on top and the eyes always land on it.
+      l.petals
+        .map((d) => `<circle cx="${r2(d.cx)}" cy="${r2(d.cy)}" r="${r2(d.r)}"/>`)
+        .join("") +
+      `<path d="${core}"/>` +
+      `</g>` +
+      `<g fill="${p.eye}"${mo ? ` class="mo-eyes mo-original-eyes"` : ""}>` +
+      l.eyes.map(eye).join("") +
+      `</g>`
+    :
     /*
      * An outline gets a real class only in animated markup. Motion needs a
      * place to transition the expression tint, but static blobatars still take
      * the compact, class-free URI path. Rounded joins stop the cloud and sun
      * from looking mechanically assembled at small avatar sizes.
      */
-    `<g fill="none" stroke="${p.head}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"${mo ? ` class="mo-head"` : ""}>` +
+      `<g fill="none" stroke="${p.head}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"${mo ? ` class="mo-head"` : ""}>` +
     // Decoration first so the core sits on top. Filled art could visually union
     // overlaps; in line art that order leaves the main outline clean and lets
     // the smaller loops read as a deliberate scallop rather than a seam.
@@ -345,7 +374,7 @@ export function render(l: Layout, p: Palette, mo?: boolean): string {
       b.ry * 0.1,
       b.smile.lean,
     )}" fill="none"/>` +
-    `</g>`;
+      `</g>`;
 
   return mo
     ? `<g class="mo-breathe"><g class="mo-bob">${body}</g></g>`

@@ -2,6 +2,7 @@ export {
   blobatar,
   _layout,
   type Animate,
+  type BlobatarVariant,
   type BlobatarOptions,
   type Expression,
 } from "./blobatar";
