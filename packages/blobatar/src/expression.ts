@@ -285,7 +285,7 @@ export function bakePose<L extends Posable>(
 
 /**
  * The roster. Frozen per major, exactly like the shape thresholds and the tone
- * set — a fifth expression added later is additive and safe, renaming one is not.
+ * set — a later expression is additive and safe, renaming one is not.
  *
  * These are the third tuning pass, and the loud one. The second pass established
  * *which* channels carry — eye height, then convergence, then vertical offset,
@@ -350,6 +350,86 @@ export const sad: Expression = {
     heat: 0,
     shake: 0,
     bdy: 2.6,
+  },
+  vars: poseVars,
+  bake: bakePose,
+};
+
+/** Heavy-lidded eyes, settled low: calm and a little hard to wake up. */
+export const sleepy: Expression = {
+  p: {
+    esx: 1.28,
+    esy: 0.3,
+    tilt: 5,
+    edy: 1.4,
+    edx: 0.5,
+    esx2: -0.12,
+    esy2: -0.04,
+    tilt2: 4,
+    lock: 1,
+    heat: 0,
+    shake: 0,
+    bdy: 1.5,
+  },
+  vars: poseVars,
+  bake: bakePose,
+};
+
+/** Open, lifted eyes and a small buoyant hop. */
+export const excited: Expression = {
+  p: {
+    esx: 1.18,
+    esy: 1.14,
+    tilt: 6,
+    edy: -1.8,
+    edx: 1.1,
+    esx2: 0.1,
+    esy2: 0.12,
+    tilt2: -6,
+    lock: 1,
+    heat: 0,
+    shake: 0,
+    bdy: -1.8,
+  },
+  vars: poseVars,
+  bake: bakePose,
+};
+
+/** One narrowed eye and a slanted pair that reads as a skeptical side-eye. */
+export const suspicious: Expression = {
+  p: {
+    esx: 1.32,
+    esy: 0.56,
+    tilt: -16,
+    edy: 0.6,
+    edx: 0.7,
+    esx2: -0.3,
+    esy2: 0.12,
+    tilt2: 13,
+    lock: 1,
+    heat: 0,
+    shake: 0,
+    bdy: 0.4,
+  },
+  vars: poseVars,
+  bake: bakePose,
+};
+
+/** Small, lowered eyes tucked toward one another in a shy little retreat. */
+export const bashful: Expression = {
+  p: {
+    esx: 0.88,
+    esy: 0.72,
+    tilt: 18,
+    edy: 2.2,
+    edx: -0.6,
+    esx2: -0.16,
+    esy2: 0.1,
+    tilt2: -9,
+    lock: 1,
+    heat: 0,
+    shake: 0,
+    bdy: 1.3,
   },
   vars: poseVars,
   bake: bakePose,

@@ -20,7 +20,16 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { blobatar, palette, traits, normalizeSeed } from "blobatar";
 import { blobatar as blob } from "blobatar/blob";
 import { blobatarUri } from "blobatar/uri";
-import { happy, mad, sad, idle } from "blobatar/expression";
+import {
+  bashful,
+  excited,
+  happy,
+  idle,
+  mad,
+  sad,
+  sleepy,
+  suspicious,
+} from "blobatar/expression";
 import { Blobatar } from "blobatar/react";
 
 let failed = false;
@@ -50,11 +59,20 @@ check("blobatar()", () => `${svg(blobatar("alain@example.com"), "blobatar").leng
 check("blobatar/blob", () => `${svg(blob("alain"), "blob").length} chars`);
 
 check("blobatar/expression", () => {
-  for (const [name, pose] of Object.entries({ happy, mad, sad, idle })) {
+  for (const [name, pose] of Object.entries({
+    happy,
+    mad,
+    sad,
+    sleepy,
+    excited,
+    suspicious,
+    bashful,
+    idle,
+  })) {
     assert(pose != null, `${name} is not exported`);
     svg(blob("alain", { expression: pose }), `blob + ${name}`);
   }
-  return "happy, mad, sad, idle";
+  return "happy, mad, sad, sleepy, excited, suspicious, bashful, idle";
 });
 
 check("blobatar/uri", () => {

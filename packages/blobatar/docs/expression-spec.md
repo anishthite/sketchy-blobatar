@@ -1,7 +1,7 @@
 # Expression spec
 
 Named poses a consumer sets and the library holds — `idle`, `happy`, `sad`,
-`mad` — and the morph between them.
+`mad`, `sleepy`, `excited`, `suspicious`, `bashful` — and the morph between them.
 
 > Six defects found after this first landed are fixed; see
 > [expression-followups.md](./expression-followups.md) for what they were.
@@ -192,6 +192,10 @@ and `tilt` are mirrored per side; the `*2` channels apply to the right eye only.
 | `happy` | 1.72 | 0.30 | 8    | −1.5 | 1.5  | 0.08  | 0.05  | −16   | 1    | 0    | 0     | −2.2 |
 | `sad`   | 0.60 | 0.56 | 26   | 3.6  | 1.9  | −0.05 | −0.07 | −7    | 1    | 0    | 0     | 2.6  |
 | `mad`   | 1.85 | 0.26 | −33  | 0.4  | 0.6  | 0     | −0.03 | 5     | 1    | 0.62 | 0.55  | 0.8  |
+| `sleepy` | 1.28 | 0.30 | 5 | 1.4 | 0.5 | −0.12 | −0.04 | 4 | 1 | 0 | 0 | 1.5 |
+| `excited` | 1.18 | 1.14 | 6 | −1.8 | 1.1 | 0.10 | 0.12 | −6 | 1 | 0 | 0 | −1.8 |
+| `suspicious` | 1.32 | 0.56 | −16 | 0.6 | 0.7 | −0.30 | 0.12 | 13 | 1 | 0 | 0 | 0.4 |
+| `bashful` | 0.88 | 0.72 | 18 | 2.2 | −0.6 | −0.16 | 0.10 | −9 | 1 | 0 | 0 | 1.3 |
 
 `happy`'s `tilt2` is exactly `−2 × tilt`, which is not a coincidence and not a
 third asymmetric flourish. The mirroring makes the left eye `−tilt` and the

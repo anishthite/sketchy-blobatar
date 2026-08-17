@@ -21,7 +21,17 @@
 
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { blobatar, _layout, _parts } from "../src/blobatar";
-import { happy, idle, mad, sad, type Expression } from "../src/expression";
+import {
+  bashful,
+  excited,
+  happy,
+  idle,
+  mad,
+  sad,
+  sleepy,
+  suspicious,
+  type Expression,
+} from "../src/expression";
 
 /**
  * Two engines, and the second one is not redundant.
@@ -114,6 +124,10 @@ const POSES: [string, Expression | undefined][] = [
   ["happy", happy],
   ["sad", sad],
   ["mad", mad],
+  ["sleepy", sleepy],
+  ["excited", excited],
+  ["suspicious", suspicious],
+  ["bashful", bashful],
 ];
 
 /**

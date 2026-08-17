@@ -83,7 +83,9 @@ export function layout(t: Traits, variant: BlobatarVariant = "outlined") {
     smile: {
       x: t.jitter("body.r0", 1.1),
       y: t.jitter("body.r1", 0.9),
-      lean: t.jitter("body.r2", 2.2),
+      // `arc` gives this same seeded offset a tiny endpoint tilt, turning a
+      // perfect little smile into a stable signature squiggle.
+      lean: t.jitter("body.r2", 1.35),
     },
   };
 
@@ -216,7 +218,10 @@ export function layout(t: Traits, variant: BlobatarVariant = "outlined") {
       },
       {
         cx: body.cx + gx + gap,
-        cy: body.cy + gy + t.jitter("eye.dy", 0.04) * ry,
+        // Its sign decides which eye sits higher for this name. The difference
+        // is deliberately tiny — a quirk, not a gaze direction — but remains
+        // visible at avatar scale and survives every expression pose.
+        cy: body.cy + gy + t.jitter("eye.dy", 0.09) * ry,
         // The far eye is slightly larger here, not smaller — it reads as
         // personality rather than as a perspective mistake.
         rx: er * scale,

@@ -77,10 +77,11 @@ export function superellipse({ cx, cy, rx, ry, n = 4, rot = 0 }: Superellipse): 
 /**
  * A quadratic arc, stroked — used only for smiles and frowns, where a closed
  * superellipse would need a boolean subtraction to get the same read. `lean`
- * lets a smile sit a little off-centre instead of looking machine-perfect.
+ * pulls the control point sideways and tips the endpoints in opposite
+ * directions, keeping the smile small but clearly hand-drawn.
  */
 export function arc(cx: number, cy: number, w: number, depth: number, lean = 0): string {
-  return `M${r2(cx - w)} ${r2(cy)}Q${r2(cx + lean)} ${r2(cy + depth)} ${r2(cx + w)} ${r2(cy)}`;
+  return `M${r2(cx - w)} ${r2(cy - lean)}Q${r2(cx + lean)} ${r2(cy + depth)} ${r2(cx + w)} ${r2(cy + lean)}`;
 }
 
 /**
