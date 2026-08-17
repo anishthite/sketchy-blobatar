@@ -47,11 +47,9 @@
   --color-muted: #8a8a93;
   --color-line: #232327;
 
-  /*
-   * Two tokens, not a theme. The page is monochrome by design — the blobatars
-   * are the only saturated thing on it — so the snippet gets just enough hue
-   * to separate what you type from what the library names, and no more.
-   */
+  /* The page stays monochrome in both themes — blobatars are the only saturated
+     thing on it — so the snippet gets just enough hue to separate what you type
+     from what the library names, and no more. */
   --color-code-str: oklch(0.83 0.07 165);
   --color-code-key: oklch(0.78 0.055 265);
 }
@@ -59,6 +57,25 @@
 @layer base {
   :root {
     color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --color-ground: #f7f6f2;
+    --color-raised: #fffefa;
+    --color-ink: #201f1b;
+    --color-muted: #6f6d66;
+    --color-line: #dedbd3;
+    --color-code-str: oklch(0.47 0.09 165);
+    --color-code-key: oklch(0.5 0.08 265);
+  }
+
+  /* Blobatars are authored to clear the dark site surface. On paper-light
+     ground, darkening only their final SVG keeps every seeded hue legible
+     without changing the page tokens or the colours of the easter-egg marks. */
+  :root[data-theme="light"] img[src^="data:image/svg+xml"],
+  :root[data-theme="light"] svg[viewBox="0 0 100 100"]:has(> g.mo-root) {
+    filter: brightness(0.62) saturate(1.2);
   }
 
   html {

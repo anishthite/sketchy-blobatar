@@ -1,6 +1,6 @@
 # blobatar
 
-Deterministic geometric blobatars from any string. No dependencies, ~3.7 KB
+Deterministic outlined blobatars from any string. No dependencies, ~4 KB
 gzipped.
 
 ```sh

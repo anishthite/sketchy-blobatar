@@ -125,8 +125,8 @@ implemented without deciding to weaken them on purpose.
 
 If it goes ahead, the shape that satisfies both:
 
-- Emit the resolved palette as custom properties alongside the motion vars
-  (`--mo-head`, `--mo-eye`), and set `fill` from CSS. A CSS rule beats a
+- Emit the resolved ink as a custom property alongside the motion vars
+  (`--mo-head`), and set paint from CSS. A CSS rule beats a
   presentation attribute, so the static markup does not have to change at all —
   which keeps the determinism guarantee intact. Verify that claim early; it is
   the load-bearing one.

@@ -242,8 +242,8 @@
    * them.
    *
    * `--mo-heat` is deliberately absent: colour is resolved in TypeScript and
-   * arrives as a finished `--mo-head`/`--mo-eye`, transitioned by `fill` on the
-   * two groups below rather than composed here.
+   * arrives as a finished `--mo-head`, transitioned by paint on the two groups
+   * below rather than composed here.
    */
   --mo-tp: --mo-esx, --mo-esy, --mo-tilt, --mo-edy, --mo-edx, --mo-esx2,
     --mo-esy2, --mo-tilt2, --mo-lock, --mo-shake, --mo-bdy;
@@ -277,11 +277,11 @@
 /**
  * Colour, for the poses that move it.
  *
- * The fills are presentation attributes, which CSS cannot read and which any
- * rule at all outranks, so the two groups restate `fill` from custom properties
- * the renderer emits. On a blobatar wearing no expression those properties hold
- * exactly the colours already in the markup, and this changes nothing; on a hot
- * pose they hold the tinted pair and `transition: fill` carries the difference.
+ * The outline and facial marks are presentation attributes, which CSS cannot
+ * read and which any rule at all outranks, so the two groups restate their
+ * paint from custom properties the renderer emits. On a blobatar wearing no
+ * expression those properties hold exactly the colours already in the markup,
+ * and this changes nothing; on a hot pose the transitions carry the difference.
  *
  * The mix itself is not here. It is resolved in TypeScript and arrives finished
  * — see `heatTint` — because the alternative shape, one registered `--mo-heat`
@@ -294,22 +294,22 @@
  * that forgot `import "blobatar/motion.css"` renders, and it is what the static
  * path — which has no stylesheet at all — has always used.
  *
- * The body is selected structurally rather than through a class of its own,
- * which is the one place in this file that is worth justifying. A `mo-body`
- * class costs bytes twice — in the markup of every animated blobatar, and in the
- * renderer that has to decide whether to emit it, which is core code every
- * static consumer pays for as well. `.mo-bob` is emitted by exactly one style
- * and has exactly two children, so "the group that is not the eyes" is not a
- * guess about the DOM; it is the whole of it.
+ * The outline has an explicit class because an SVG `fill="none"` must survive
+ * the colour transition. A structural `g:not(.mo-eyes)` selector would outrank
+ * that presentation attribute and silently fill the blob. The class exists only
+ * on the animated path, where the CSS needs it; static output remains compact.
  */
-.mo-bob > g:not(.mo-eyes) {
-  fill: var(--mo-head);
-  transition: fill var(--mo-morph) var(--mo-morph-ease);
+.mo-head {
+  stroke: var(--mo-head);
+  transition: stroke var(--mo-morph) var(--mo-morph-ease);
 }
 
 .mo-eyes {
-  fill: var(--mo-eye);
-  transition: fill var(--mo-morph) var(--mo-morph-ease);
+  fill: var(--mo-head);
+  stroke: var(--mo-head);
+  transition:
+    fill var(--mo-morph) var(--mo-morph-ease),
+    stroke var(--mo-morph) var(--mo-morph-ease);
 }
 
 /**

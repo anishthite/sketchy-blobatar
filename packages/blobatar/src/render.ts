@@ -121,9 +121,9 @@ function posed<L>(l: L, opts: BlobatarOptions, animate?: unknown) {
  * Called on the static path only, for the mirror-image of the reason `posed`
  * skips the animated one: when animating, the fills have to stay off the markup
  * entirely — `parts.inner` may not vary with the expression — so the tinted
- * colors go out as `--mo-head`/`--mo-eye` in `vars` instead and the stylesheet
- * puts them on. Same two colors, resolved once, serialized into whichever half
- * of the split can carry them.
+ * ink goes out as `--mo-head` in `vars` instead and the stylesheet puts it on.
+ * The colour is resolved once, then serialized into whichever half of the split
+ * can carry it.
  */
 const tinted = (p: Palette, e?: Expression) => (e?.tint ? e.tint(p, e.p) : p);
 

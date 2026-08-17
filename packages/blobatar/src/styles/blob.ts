@@ -1,15 +1,15 @@
 import type { Palette } from "../color";
-import { blobPath, superellipse } from "../shape";
+import { arc, blobPath, roughSuperellipse } from "../shape";
 import type { Traits } from "../traits";
 
 /**
- * A soft body and two capsule eyes.
+ * An outlined blob with two small eyes and a quiet smile.
  *
  * The silhouette carries the identity here, so it comes from a vocabulary of
  * six: a plain round, a tilted box, a lopsided organic pebble, a lumpy cloud, a
- * petalled sun, and a round body with a nub growing off it. Everything is drawn
- * in one fill color inside a single `<g>`, which means overlapping parts union
- * visually with no boolean geometry and no clip paths.
+ * petalled sun, and a round body with a nub growing off it. The mark is line
+ * art rather than a filled mascot: an irregular outline makes the avatar feel
+ * drawn, while the tiny face leaves the silhouette as the thing a name owns.
  *
  * Every eye dimension is expressed as a fraction of the body radius rather than
  * in absolute units. Bodies here range from 22 to 38 units depending on how much
@@ -48,6 +48,16 @@ const CORE: Record<Shape, number> = {
   nub: 0.88,
 };
 
+/** More wobble for an organic pebble, less for a drawn-but-still-boxy square. */
+const WOBBLE: Record<Shape, number> = {
+  round: 0.12,
+  boxy: 0.09,
+  organic: 0.16,
+  cloud: 0.14,
+  sun: 0.11,
+  nub: 0.11,
+};
+
 export function layout(t: Traits) {
   const shape = shapeOf(t("shape"));
   const r = t.num("body.r", 31, 38) * CORE[shape];
@@ -61,12 +71,18 @@ export function layout(t: Traits) {
     ry,
     n: shape === "boxy" ? t.num("body.n", 3.4, 6) : t.num("body.n", 1.9, 2.5),
     rot: shape === "boxy" ? t.num("body.rot", -20, 20) : 0,
-    // Lopsided by ±16%, which is enough to read as hand-drawn and not so much
-    // that the eyes can end up on a bulge instead of the face.
+    // The same keyed values drive the outline's wobble on every silhouette.
+    // A box gets only a little movement, preserving its broad corners; a pebble
+    // gets enough to lose any sense that a shape tool drew it.
     radii: Array.from(
       { length: t.int("body.pts", 6, 8) },
-      (_, i) => 1 + t.jitter(`body.r${i}`, 0.16),
+      (_, i) => 1 + t.jitter(`body.r${i}`, WOBBLE[shape]),
     ),
+    smile: {
+      x: t.jitter("body.r0", 1.1),
+      y: t.jitter("body.r1", 0.9),
+      lean: t.jitter("body.r2", 2.2),
+    },
   };
 
   // Where the eye pair sits as a unit. Gaze is deliberately a small effect: at
@@ -129,7 +145,19 @@ export function layout(t: Traits) {
 
   // Petals and lumps ride on a ring just outside the core, so they read as
   // part of the same creature rather than as satellites.
-  const petals: { cx: number; cy: number; r: number }[] = [];
+  const petals: { cx: number; cy: number; r: number; radii: number[] }[] = [];
+  const petal = (cx: number, cy: number, r: number, i: number) => ({
+    cx,
+    cy,
+    r,
+    // The indexed body traits are already public and configuration-safe. Reusing
+    // them makes every small lobe feel related to its body without opening a
+    // second, unobservable family of "roughness" controls.
+    radii: Array.from(
+      { length: 4 },
+      (_, j) => 1 + t.jitter(`body.r${(i + j) % 8}`, 0.12),
+    ),
+  });
 
   if (shape === "sun") {
     const count = t.int("sun.n", 6, 9);
@@ -138,11 +166,12 @@ export function layout(t: Traits) {
     const off = t.num("sun.rot", 0, 2 * Math.PI);
     for (let i = 0; i < count; i++) {
       const a = off + (2 * Math.PI * i) / count;
-      petals.push({
-        cx: body.cx + Math.cos(a) * dist,
-        cy: body.cy + Math.sin(a) * dist,
-        r: pr,
-      });
+      petals.push(petal(
+        body.cx + Math.cos(a) * dist,
+        body.cy + Math.sin(a) * dist,
+        pr,
+        i,
+      ));
     }
   } else if (shape === "cloud") {
     // Lobes ride the upper half only, so the silhouette stays a cloud rather
@@ -150,21 +179,23 @@ export function layout(t: Traits) {
     const count = t.int("cloud.n", 4, 6);
     for (let i = 0; i < count; i++) {
       const a = Math.PI + (Math.PI * (i + 0.5)) / count;
-      petals.push({
-        cx: body.cx + Math.cos(a) * r * 0.8,
-        cy: body.cy + Math.sin(a) * r * 0.5,
-        r: r * t.num(`cloud.r${i}`, 0.44, 0.62),
-      });
+      petals.push(petal(
+        body.cx + Math.cos(a) * r * 0.8,
+        body.cy + Math.sin(a) * r * 0.5,
+        r * t.num(`cloud.r${i}`, 0.44, 0.62),
+        i,
+      ));
     }
   } else if (shape === "nub") {
     const count = t.int("nub.n", 1, 2);
     for (let i = 0; i < count; i++) {
       const a = t.num(`nub.a${i}`, 0, 2 * Math.PI);
-      petals.push({
-        cx: body.cx + Math.cos(a) * r * 0.88,
-        cy: body.cy + Math.sin(a) * r * 0.88,
-        r: r * t.num(`nub.r${i}`, 0.24, 0.4),
-      });
+      petals.push(petal(
+        body.cx + Math.cos(a) * r * 0.88,
+        body.cy + Math.sin(a) * r * 0.88,
+        r * t.num(`nub.r${i}`, 0.24, 0.4),
+        i,
+      ));
     }
   }
 
@@ -213,17 +244,11 @@ export type Layout = ReturnType<typeof layout>;
  */
 export function render(l: Layout, p: Palette, mo?: boolean): string {
   const b = l.body;
-  const core =
-    l.shape === "organic" || l.shape === "cloud"
-      ? blobPath(
-          b.cx,
-          b.cy,
-          b.rx,
-          b.ry,
-          b.radii,
-          l.shape === "cloud" ? 0 : b.rot,
-        )
-      : superellipse(b);
+  // Every core carries some ink wobble. `roughSuperellipse` retains the
+  // superellipse's squareness, so a box stays a box rather than collapsing into
+  // another generic pebble; the same seeded contour gives the whole family one
+  // hand-drawn voice.
+  const core = roughSuperellipse(b, b.radii);
 
   const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -264,28 +289,62 @@ export function render(l: Layout, p: Palette, mo?: boolean): string {
   // declarations and the shape underneath keeps the loops. ~8 B per eye; see
   // `.mo-eye` in `motion.css` for the measurement.
   const eye = (e: Layout["eyes"][number], i: number) => {
-    const path = `<path d="${superellipse(e)}"/>`;
+    /*
+     * The layout keeps the generous portrait eye envelope: expressions use it
+     * for their scale and tilt channels, and the containment maths continues to
+     * describe the full range they can sweep through. What we draw inside that
+     * envelope is deliberately much rounder, so the resting face reads as two
+     * ink dots instead of two heavy capsules.
+     *
+     * A resting eye is close to circular. The vertical factor comes from the
+     * original eye height rather than from `rx`: `bakePose` and the animated
+     * wrapper can then apply the same independent X/Y expression scale to the
+     * dot, which keeps static and animated poses geometrically identical.
+     */
+    const dot = {
+      ...e,
+      rx: e.rx * 0.8,
+      ry: e.ry * 0.32,
+    };
+    const ink = Array.from(
+      { length: 5 },
+      (_, j) => l.body.radii[(i * 3 + j) % l.body.radii.length]!,
+    );
+    const path = `<path d="${blobPath(dot.cx, dot.cy, dot.rx, dot.ry, ink, dot.rot)}"/>`;
     return mo
       ? `<g class="mo-eye" style="--mo-wrap:${i ? 1 : -1};--mo-lean:${r2(e.rot)};transform-origin:${r2(e.cx)}px ${r2(e.cy)}px">${path}</g>`
       : path;
   };
 
   const body =
-    `<g fill="${p.head}">` +
-    // Decoration first so the core sits on top and the eyes always land on it.
-    // Petals are true circles, so <circle> costs about a quarter of what the
-    // equivalent four-segment path would — and a sun carries up to nine of them.
+    /*
+     * An outline gets a real class only in animated markup. Motion needs a
+     * place to transition the expression tint, but static blobatars still take
+     * the compact, class-free URI path. Rounded joins stop the cloud and sun
+     * from looking mechanically assembled at small avatar sizes.
+     */
+    `<g fill="none" stroke="${p.head}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"${mo ? ` class="mo-head"` : ""}>` +
+    // Decoration first so the core sits on top. Filled art could visually union
+    // overlaps; in line art that order leaves the main outline clean and lets
+    // the smaller loops read as a deliberate scallop rather than a seam.
     l.petals
-      .map((d) => `<circle cx="${r2(d.cx)}" cy="${r2(d.cy)}" r="${r2(d.r)}"/>`)
+      .map((d) => `<path d="${blobPath(d.cx, d.cy, d.r, d.r, d.radii)}"/>`)
       .join("") +
     `<path d="${core}"/>` +
     `</g>` +
-    // The eye group already existed to share a fill, and it is exactly the
-    // element the saccade layer needs: both eyes must move as one, because
-    // independent movement reads as a lazy eye instantly. Blink stays on the
-    // individual paths underneath it.
-    `<g fill="${p.eye}"${mo ? ` class="mo-eyes"` : ""}>` +
+    // The facial marks take their lead from the outline, so they remain legible
+    // on a dark host. The eye wrappers keep blink and glance independent, while
+    // the smile stays still as an anchor instead of competing with every
+    // expression.
+    `<g fill="${p.head}" stroke="${p.head}" stroke-width="2.8" stroke-linecap="round"${mo ? ` class="mo-eyes"` : ""}>` +
     l.eyes.map(eye).join("") +
+    `<path d="${arc(
+      b.cx + b.smile.x,
+      b.cy + b.ry * 0.29 + b.smile.y,
+      b.rx * 0.23,
+      b.ry * 0.1,
+      b.smile.lean,
+    )}" fill="none"/>` +
     `</g>`;
 
   return mo
@@ -294,7 +353,7 @@ export function render(l: Layout, p: Palette, mo?: boolean): string {
 }
 
 /**
- * No backdrop by default. The body *is* the blobatar here, and a plate behind a
- * near-full-bleed shape just adds a rim of color that fights the silhouette.
+ * No backdrop by default. The outline is the blobatar here, and a plate behind
+ * a near-full-bleed shape just adds a rim of color that fights the silhouette.
  */
 export const background = false as const;

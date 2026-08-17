@@ -42,18 +42,17 @@ const motion = (mode: Animate, e?: Expression) => (t: Traits, p: Palette) => {
     cls: rootClass(mode, !!Object.keys(pose).length || !!e?.tint),
     vars: {
       ...motionVars(t),
-      // The fills, as custom properties, on every animated `blob` — tinted when
+      // The ink, as a custom property, on every animated `blob` — tinted when
       // the pose tints and identical to the markup's own attributes when it does
       // not. Emitted unconditionally rather than only for hot poses, because the
-      // stylesheet's `fill` rules have to resolve to *something* correct on an
+      // stylesheet's paint rules have to resolve to *something* correct on an
       // blobatar wearing no expression, and a `var()` that falls back to nothing
-      // makes `fill` inherit black.
+      // makes SVG paint inherit black.
       //
-      // Cost is ~30 B per animated blobatar. It buys the tint being a plain
+      // Cost is ~16 B per animated blobatar. It buys the tint being a plain
       // `transition: fill` in both directions instead of a custom property that
       // disappears mid-morph on the way out.
       "--mo-head": c.head!,
-      "--mo-eye": c.eye!,
       ...pose,
     },
   };

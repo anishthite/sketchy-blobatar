@@ -77,10 +77,19 @@ const BROWSERS = [
   },
 ];
 
+/** A missing optional browser is a one-engine run, not a failed process spawn. */
+const available = (bin: string) => {
+  try {
+    return Bun.spawnSync([bin, "--version"], { stderr: "ignore" }).success;
+  } catch {
+    return false;
+  }
+};
+
 const found = BROWSERS.map((b) => ({
   ...b,
   bin: (b.bins.filter(Boolean) as string[]).find(
-    (bin) => Bun.spawnSync([bin, "--version"], { stderr: "ignore" }).success,
+    available,
   ),
 })).filter((b) => b.bin);
 
@@ -146,12 +155,12 @@ const cases = seeds.flatMap(({ s, lean }) =>
       posed: eyes(_layout(s, { expression: e ?? idle })),
       base: eyes(_layout(s)),
       // What the *static* path paints. A tinting pose resolves its colour into
-      // the markup here and into `--mo-head`/`--mo-eye` on the animated side,
-      // which are two serializations of one decision and have nothing forcing
+      // the markup here and into `--mo-head` on the animated side, which are
+      // two serializations of one decision and have nothing forcing
       // them to agree — the same gap check A exists for, one axis over.
       fill: (() => {
         const l = _layout(s, { expression: e ?? idle });
-        return [l.palette.head!, l.palette.eye!];
+        return l.palette.head!;
       })(),
     };
   }),

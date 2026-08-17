@@ -56,8 +56,13 @@ const ENTRIES: {
     // existed only to keep two of them apart: the palette's variant-keyed ramp
     // and floor tables, the `expressive` flag, and the `variant` argument
     // threaded through `resolve`.
+    // Raised from 3700 for the outlined, hand-drawn treatment: an irregular
+    // superellipse now drives the body, face marks and decorations rather than
+    // a single regular contour. The extra 298 B gzipped is the visible feature,
+    // not a new dependency or runtime path; the neighbouring entries stay
+    // proportionally tight.
     name: "blob only",
-    budget: 3700,
+    budget: 4025,
     external: [] as string[],
     source: `import { blobatar } from "../../src/blob";
              globalThis.x = blobatar(String(globalThis.seed));`,
@@ -66,14 +71,14 @@ const ENTRIES: {
     // The barrel. Costs more than `blob only` above because it also carries the
     // colour and trait utilities, which a consumer who only renders never touches.
     name: "barrel",
-    budget: 3750,
+    budget: 4025,
     external: [],
     source: `import { blobatar } from "../../src/index";
              globalThis.x = blobatar(String(globalThis.seed));`,
   },
   {
     name: "uri",
-    budget: 3850,
+    budget: 4125,
     external: [],
     source: `import { blobatarUri } from "../../src/uri";
              globalThis.x = blobatarUri(String(globalThis.seed));`,
@@ -92,12 +97,12 @@ const ENTRIES: {
     // animation under it. 80 B is the price of the transition existing.
     //
     // Raised again from 5750 by 64 B for the colour channel: the 33 B the core
-    // pays (see "blob only") plus the animated path emitting the resolved fills
-    // as `--mo-head`/`--mo-eye`. Those go out on every animated `blob`, tinted
+    // pays (see "blob only") plus the animated path emitting the resolved ink
+    // as `--mo-head`. That goes out on every animated `blob`, tinted
     // or not, so the stylesheet's `fill` rules always resolve to something
     // correct — a `var()` with nothing behind it makes `fill` inherit black.
     name: "react",
-    budget: 4750,
+    budget: 4975,
     external: ["react"],
     source: `import { Blobatar } from "../../src/react";
              globalThis.x = Blobatar;`,
@@ -109,7 +114,7 @@ const ENTRIES: {
     // Measured: +343 B for the first expression (the shared serializer and bake,
     // paid once) and +36 B for each one after it. Importing all three is 4098.
     name: "blob + happy",
-    budget: 4050,
+    budget: 4350,
     external: [],
     source: `import { blobatar } from "../../src/blob";
              import { happy } from "../../src/expression";

@@ -1,5 +1,5 @@
 const FACTS = [
-  ["~3.7 KB", "gzipped, blob only"],
+  ["~4 KB", "gzipped, blob only"],
   ["0", "dependencies"],
   ["6", "silhouettes"],
   ["4.5:1", "contrast, every hue"],
