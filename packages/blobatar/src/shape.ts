@@ -102,6 +102,7 @@ export function blobPath(
   ry: number,
   radii: number[],
   rot = 0,
+  precision: 1 | 2 = 1,
 ): string {
   const n = radii.length;
   const t0 = (rot * Math.PI) / 180;
@@ -110,6 +111,7 @@ export function blobPath(
       const a = t0 + (2 * Math.PI * i) / n;
       return [cx + rx * m * Math.cos(a), cy + ry * m * Math.sin(a)] as [number, number];
     }),
+    precision,
   );
 }
 
@@ -146,11 +148,12 @@ export function roughSuperellipse(
 }
 
 /** A closed Catmull–Rom contour through points already in viewBox coordinates. */
-function spline(p: [number, number][]): string {
+function spline(p: [number, number][], precision: 1 | 2 = 1): string {
   const n = p.length;
+  const round = precision === 1 ? r1 : r2;
 
   const at = (i: number) => p[((i % n) + n) % n]!;
-  let d = `M${r1(at(0)[0])} ${r1(at(0)[1])}`;
+  let d = `M${round(at(0)[0])} ${round(at(0)[1])}`;
 
   for (let i = 0; i < n; i++) {
     const [x0, y0] = at(i - 1);
@@ -158,9 +161,9 @@ function spline(p: [number, number][]): string {
     const [x2, y2] = at(i + 1);
     const [x3, y3] = at(i + 2);
     d +=
-      `C${r1(x1 + (x2 - x0) / 6)} ${r1(y1 + (y2 - y0) / 6)}` +
-      ` ${r1(x2 - (x3 - x1) / 6)} ${r1(y2 - (y3 - y1) / 6)}` +
-      ` ${r1(x2)} ${r1(y2)}`;
+      `C${round(x1 + (x2 - x0) / 6)} ${round(y1 + (y2 - y0) / 6)}` +
+      ` ${round(x2 - (x3 - x1) / 6)} ${round(y2 - (y3 - y1) / 6)}` +
+      ` ${round(x2)} ${round(y2)}`;
   }
 
   return d + "Z";

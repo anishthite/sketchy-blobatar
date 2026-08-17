@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { Snippet } from "@/components/ui/snippet";
 import { Install } from "@/components/ui/install";
+import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { EggMark, eggFor } from "@/eggs";
 import { cn } from "@/lib/utils";
@@ -117,6 +118,7 @@ function snippet(
   hue: number | null,
   pose: Pose,
   shape: Shape | null,
+  variant: BlobatarOptions["variant"],
 ) {
   const posed = pose.value !== idle;
 
@@ -131,6 +133,7 @@ function snippet(
   if (shape) props.push(`traits={{ shape: ${shape.at} }}`);
   if (bg !== "none") props.push(`background="${bg}"`);
   if (hue !== null) props.push(`hue={${hue}}`);
+  if (variant === "original") props.push(`variant="original"`);
   if (posed) props.push(`expression={${pose.name}}`);
   props.push(`animate="hover"`);
 
@@ -156,6 +159,7 @@ export function Hero() {
   const [hue, setHue] = useState<number | null>(null);
   const [pose, setPose] = useState<Pose>(POSES[0]);
   const [shape, setShape] = useState<Shape | null>(null);
+  const [variant, setVariant] = useState<BlobatarOptions["variant"]>("outlined");
 
   /**
    * A reaction is a temporary override of the picked pose, not a replacement
@@ -191,7 +195,12 @@ export function Hero() {
   useEffect(() => () => clearTimeout(release.current ?? undefined), []);
 
   const shown = burst ?? pose.value;
-  const tuned = bg !== "none" || hue !== null || pose.value !== idle || shape !== null;
+  const tuned =
+    bg !== "none" ||
+    hue !== null ||
+    pose.value !== idle ||
+    shape !== null ||
+    variant === "original";
 
   /**
    * The burst pattern the library documents: an expression is a latched state,
@@ -217,6 +226,7 @@ export function Hero() {
     background: bg === "none" ? false : bg,
     hue: hue ?? undefined,
     expression: shown,
+    variant,
     // Sparse on purpose: pinning `shape` leaves every other trait — eye gap,
     // body ratio, tilt — coming from the name, so picking a cloud still gives
     // you *your* cloud rather than the same cloud everybody else gets.
@@ -453,6 +463,26 @@ export function Hero() {
               className="max-h-[var(--radix-popover-content-available-height)] w-80 overflow-y-auto"
             >
               <div className="flex flex-col gap-5">
+                <Field label="version">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-muted flex justify-between font-mono text-[0.65rem] lowercase">
+                      <span>original</span>
+                      <span>outlined</span>
+                    </div>
+                    <Slider
+                      aria-label="Blobatar version"
+                      aria-valuetext={
+                        variant === "original" ? "Original filled style" : "Outlined style"
+                      }
+                      min={0}
+                      max={1}
+                      step={1}
+                      value={[variant === "original" ? 0 : 1]}
+                      onValueChange={([value]) => setVariant(value === 0 ? "original" : "outlined")}
+                    />
+                  </div>
+                </Field>
+
                 {/*
                   Shape first: it is the trait that decides what creature this
                   is, and every control under it decorates that decision.
@@ -629,7 +659,7 @@ export function Hero() {
             <span>your config</span>
             <span className="font-mono normal-case">Blobatar.tsx</span>
           </div>
-          <Snippet code={snippet(seed, bg, hue, pose, shape)} />
+          <Snippet code={snippet(seed, bg, hue, pose, shape, variant)} />
           <p className="text-muted text-xs leading-relaxed">
             Every prop is optional except the name. Drop{" "}
             <code className="font-mono">animate</code> and the blobatar renders as a

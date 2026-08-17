@@ -19,6 +19,7 @@ export function Slider({
   // element carrying `role="slider"` — a label on the root names a wrapper
   // nothing announces, which is the same as no label at all.
   "aria-label": label,
+  "aria-valuetext": valueText,
   ...props
 }: React.ComponentProps<typeof SliderPrimitive.Root> & { ghost?: number }) {
   return (
@@ -52,6 +53,7 @@ export function Slider({
 
       <SliderPrimitive.Thumb
         aria-label={label}
+        aria-valuetext={valueText}
         className={cn(
           "border-ground bg-ink block size-3.5 rounded-full border-2 shadow-sm",
           "transition-[background-color,box-shadow] duration-150",

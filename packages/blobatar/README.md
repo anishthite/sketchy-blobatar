@@ -40,6 +40,15 @@ render, import the renderer on its own and save about a kilobyte:
 import { blobatar } from "blobatar/blob";
 ```
 
+## Styles
+
+Outlined is the default. To retain the original filled treatment while keeping
+the same name-derived silhouette and palette, set `variant` to `"original"`:
+
+```tsx
+<Blobatar name={user.email} variant="original" size={48} />;
+```
+
 ## What it guarantees
 
 **Determinism.** The same name always renders the same blobatar within a major
@@ -73,6 +82,7 @@ several hundred blobatars on one page cannot produce id collisions.
 | `background` | none        | `"squircle"`, `"circle"`, `"square"`, or `false`.                       |
 | `hue`        | —           | Locks hue in degrees; the name then drives shape only.                 |
 | `tone`       | —           | Locks the swatch as a 0–1 position in the set.                          |
+| `variant`    | `"outlined"` | `"original"` restores the filled treatment.                          |
 | `traits`     | —           | Pins individual traits as 0–1 positions. See below.                    |
 | `palette`    | —           | Per-key hex overrides. Bypasses the contrast guarantee.                 |
 | `normalize`  | `true`      | NFC + trim + lowercase.                                                 |

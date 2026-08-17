@@ -46,6 +46,15 @@ describe("output", () => {
     expect(svg).toContain('stroke-width="3.4"');
     expect(svg).toContain('stroke-linecap="round"');
   });
+
+  test("can restore the original filled treatment", () => {
+    const original = blobatar("line-art", { background: false, variant: "original" });
+    const outlined = blobatar("line-art", { background: false });
+
+    expect(original).toContain('<g fill="');
+    expect(original).not.toContain('fill="none"');
+    expect(original).not.toBe(outlined);
+  });
 });
 
 describe("options", () => {
