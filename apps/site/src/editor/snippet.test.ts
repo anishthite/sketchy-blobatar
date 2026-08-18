@@ -14,7 +14,7 @@ import { KEY_ORDER, round3 } from "./axes";
  * back out and rendering it.
  */
 
-const NAME = "alain00";
+const NAME = "sketchy";
 
 /** The `traits` literal from a generated snippet, evaluated. */
 function pasted(code: string): Record<string, number> {
@@ -120,7 +120,7 @@ describe("what it emits", () => {
 
   test("an empty name falls back rather than emitting nothing", () => {
     const code = snippet({ api: "react", name: "", pinned: {}, motion: false });
-    expect(code).toContain(`name="blobatar"`);
+    expect(code).toContain(`name="sketchy"`);
   });
 });
 

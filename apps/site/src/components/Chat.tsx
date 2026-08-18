@@ -65,7 +65,7 @@ export function Chat() {
         </h2>
         <p className="text-muted mt-4 text-balance leading-relaxed">
           One prop per person, and the string does the rest. The same handle
-          always produces the same blobatar, so whoever you learn in a thread is
+          always produces the same Sketchy Blobatar, so whoever you learn in a thread is
           who you recognise in the sidebar.
         </p>
       </div>
@@ -108,7 +108,7 @@ export function Chat() {
                 <Blobatar
                   name={run[0]!.name}
                   animate="hover"
-                  title={`Blobatar for ${run[0]!.name}`}
+                  title={`Sketchy Blobatar for ${run[0]!.name}`}
                   className="size-10 shrink-0"
                 />
 
@@ -146,7 +146,7 @@ export function Chat() {
               <Blobatar
                 name="tobias"
                 animate="hover"
-                title="Blobatar for tobias"
+                title="Sketchy Blobatar for tobias"
                 className="size-10 shrink-0 opacity-50"
               />
               <div className="text-muted flex items-center gap-2 text-xs">

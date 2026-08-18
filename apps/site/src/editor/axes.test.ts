@@ -11,7 +11,7 @@ import { blobLayout, resolved } from "./resolved";
  * retuned range leaves the clamp readback quietly pointing at the wrong place.
  */
 
-const NAME = "alain00";
+const NAME = "sketchy";
 
 describe("the bands copied out of the library", () => {
   test("every shape midpoint still selects the shape it names", () => {

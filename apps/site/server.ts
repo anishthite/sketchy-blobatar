@@ -60,4 +60,4 @@ const server = serve({
   development: process.env.NODE_ENV !== "production" && { hmr: true, console: true },
 });
 
-console.log(`blobatar site → ${server.url}`);
+console.log(`Sketchy Blobatar site → ${server.url}`);

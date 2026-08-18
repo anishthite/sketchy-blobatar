@@ -143,7 +143,7 @@ function snippet(
   // Only what differs from the defaults. A snippet that restates every default
   // reads as configuration you are obliged to supply, which is the opposite of
   // what a one-prop library wants to advertise.
-  const props = [`name=${attr(seed || "blobatar")}`];
+  const props = [`name=${attr(seed || "sketchy")}`];
   if (shape) props.push(`traits={{ shape: ${shape.at} }}`);
   if (bg !== "none") props.push(`background="${bg}"`);
   if (hue !== null) props.push(`hue={${hue}}`);
@@ -168,7 +168,7 @@ function snippet(
 }
 
 export function Hero() {
-  const [seed, setSeed] = useState("alain00");
+  const [seed, setSeed] = useState("sketchy");
   const [bg, setBg] = useState<Bg>("none");
   const [hue, setHue] = useState<number | null>(null);
   const [pose, setPose] = useState<Pose>(POSES[0]);
@@ -256,37 +256,36 @@ export function Hero() {
     */
     <section className="relative mx-auto flex min-h-svh max-w-6xl flex-col justify-center gap-14 px-6 py-12 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:py-16">
       {/*
-        Source and author, in that order — the repo is what the page is selling
-        and the profile is who to ask about it.
+        Source — the repository is what the page is selling.
 
         Absolute to the hero rather than fixed to the viewport: there is no
-        header on this page, so a pair of icons pinned to the window would
+        header on this page, so an icon pinned to the window would
         follow you down three more sections with nothing to belong to. Here
         they scroll away with the hero, and `right-6` matches the section's own
         padding so they land on the same edge as the snippet column below.
 
-        Icons rather than labelled links — at this size and this far from the
-        content, two words would read as a navigation bar the page does not
+        An icon rather than a labelled link — at this size and this far from the
+        content, a word would read as a navigation bar the page does not
         have. The name lives in the tooltip and the accessible label.
       */}
       <div className="absolute top-6 right-6 z-10 flex items-center gap-1 lg:top-8">
         <ThemeToggle />
-        <SocialLink href="https://github.com/Alain00/blobatar" label="blobatar on GitHub">
+        <SocialLink
+          href="https://github.com/anishthite/sketchy-blobatar"
+          label="Sketchy Blobatar on GitHub"
+        >
           <GitHubIcon />
-        </SocialLink>
-        <SocialLink href="https://x.com/alain_0012" label="@alain_0012 on X">
-          <XIcon />
         </SocialLink>
       </div>
 
       <div className="flex flex-col items-center gap-10 lg:items-start">
         <div className="w-full">
           <h1 className="text-[clamp(3rem,10vw,7.5rem)] leading-[0.82] font-medium tracking-[-0.055em]">
-            blobatar
+            Sketchy Blobatar
           </h1>
 
           <p className="text-muted mt-5 max-w-md text-balance text-base leading-relaxed">
-            Deterministic outlined blobatars from any string. No dependencies,
+            Deterministic outlined avatars from any string. No dependencies,
             about 4&nbsp;KB.
           </p>
         </div>
@@ -320,7 +319,7 @@ export function Hero() {
                 only place on the page that says a blobatar is *yours*.
               */}
               <label htmlFor="seed" className="text-muted cursor-text tracking-tight">
-                Let’s find your blobatar
+                Let’s find your avatar
               </label>
 
               {/*
@@ -376,7 +375,7 @@ export function Hero() {
               </span>
 
               <PopoverTrigger
-                  aria-label="Blobatar options"
+                  aria-label="Sketchy Blobatar options"
                   className={cn(
                     "text-muted hover:text-ink hover:bg-line/50 -mb-1 self-center rounded-lg p-1.5",
                     "transition-colors duration-150",
@@ -449,7 +448,7 @@ export function Hero() {
                     name={seed || " "}
                     animate="always"
                     {...opts}
-                    title={`Blobatar for ${seed}`}
+                    title={`Sketchy Blobatar for ${seed}`}
                     // `hero-blobatar` is a hook for one rule in `styles.css`, which
                     // gives this blobatar back the pointer reaction the page turns
                     // off everywhere else.
@@ -484,7 +483,7 @@ export function Hero() {
                       <span>outlined</span>
                     </div>
                     <Slider
-                      aria-label="Blobatar version"
+                      aria-label="Sketchy Blobatar version"
                       aria-valuetext={
                         variant === "original" ? "Original filled style" : "Outlined style"
                       }
@@ -676,7 +675,7 @@ export function Hero() {
           <Snippet code={snippet(seed, bg, hue, pose, shape, variant)} />
           <p className="text-muted text-xs leading-relaxed">
             Every prop is optional except the name. Drop{" "}
-            <code className="font-mono">animate</code> and the blobatar renders as a
+            <code className="font-mono">animate</code> and the avatar renders as a
             single <code className="font-mono">&lt;img&gt;</code>.
           </p>
 
@@ -790,22 +789,14 @@ function SocialLink({
 }
 
 /**
- * Both marks are solid `fill`, not strokes like the rest of the page's icons —
- * these are wordmarks with fixed geometry, and redrawing them as 1.7px outlines
- * would make them not-quite-GitHub and not-quite-X.
+ * The mark is solid `fill`, not a stroke like the rest of the page's icons —
+ * it is a wordmark with fixed geometry, and redrawing it as a 1.7px outline
+ * would make it not-quite-GitHub.
  */
 function GitHubIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-[1.15rem]">
       <path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.5 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z" />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-[1.05rem]">
-      <path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.22-6.82-5.96 6.82H1.68l7.73-8.84L1.25 2.25h6.82l4.71 6.23 5.46-6.23Zm-1.16 17.52h1.83L7.01 4.13H5.05l12.03 15.64Z" />
     </svg>
   );
 }

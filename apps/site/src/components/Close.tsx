@@ -30,15 +30,21 @@ export function Close() {
           Open the editor
         </a>
         <a
-          href="https://github.com/Alain00/blobatar"
+          href="https://github.com/anishthite/sketchy-blobatar"
           className="text-muted hover:text-ink text-sm underline underline-offset-4 transition-colors"
         >
           Source on GitHub
         </a>
+        <a
+          href="https://github.com/Alain00/blobatar"
+          className="text-muted hover:text-ink text-sm underline underline-offset-4 transition-colors"
+        >
+          Based on the original Blobatar
+        </a>
       </div>
 
       <footer className="border-line text-muted mt-32 border-t pt-8 text-xs">
-        MIT licensed. Every blobatar on this page was generated in your browser.
+        MIT licensed. Every Sketchy Blobatar on this page was generated in your browser.
       </footer>
     </section>
   );

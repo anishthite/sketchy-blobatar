@@ -11,7 +11,7 @@
  * is different every load without needing a larger list.
  */
 export const NAMES = [
-  "alain", "astrid", "bao", "beatriz", "bjorn", "camille", "carlos", "chidi",
+  "sketchy", "astrid", "bao", "beatriz", "bjorn", "camille", "carlos", "chidi",
   "clara", "dagny", "daniela", "dario", "diego", "dmitri", "eero", "elena",
   "elias", "elin", "emeka", "emil", "esther", "fatima", "felix", "finn",
   "freya", "gabriel", "gita", "greta", "gustav", "hana", "hassan", "heidi",

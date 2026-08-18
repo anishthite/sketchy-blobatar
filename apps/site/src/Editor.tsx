@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
  * because they are the same object.
  */
 export function Editor() {
-  const [name, setName] = useState("alain00");
+  const [name, setName] = useState("sketchy");
   const [pinned, setPinned] = useState<Record<string, number>>({});
   const [api, setApi] = useState<Api>("react");
   const [motion, setMotion] = useState<Motion>("hover");
@@ -107,7 +107,7 @@ export function Editor() {
           className="text-muted hover:text-ink group flex items-baseline gap-2 text-sm transition-colors"
         >
           <span className="group-hover:-translate-x-0.5 inline-block transition-transform">←</span>
-          blobatar
+          Sketchy Blobatar
         </a>
         <div className="flex items-center gap-2">
           <span className="text-muted font-mono text-xs lowercase">editor</span>
@@ -185,7 +185,7 @@ export function Editor() {
 
           <p className="text-muted text-xs leading-relaxed">
             {count === 0
-              ? "Nothing is pinned, so this blobatar is entirely the name — which is the default, and usually the right one. Pin an axis to fix it for everybody."
+              ? "Nothing is pinned, so this Sketchy Blobatar is entirely the name — which is the default, and usually the right one. Pin an axis to fix it for everybody."
               : `${count} pinned ${count === 1 ? "axis is" : "axes are"} fixed for every name; everything else still comes from the one you pass.`}
           </p>
 
@@ -310,14 +310,14 @@ function Preview({
           name={name || " "}
           traits={pinned}
           animate={motion}
-          title={`Blobatar for ${name}`}
+          title={`Sketchy Blobatar for ${name}`}
           className="editor-preview size-[min(34vmin,15rem)]"
         />
       ) : (
         <Blobatar
           name={name || " "}
           traits={pinned}
-          alt={`Blobatar for ${name}`}
+          alt={`Sketchy Blobatar for ${name}`}
           className="size-[min(34vmin,15rem)]"
         />
       )}
