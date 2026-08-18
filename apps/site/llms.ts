@@ -14,14 +14,14 @@
  */
 import { dirname, join } from "node:path";
 
-const REPO = "https://github.com/Alain00/blobatar";
+const REPO = "https://github.com/anishthite/sketchy-blobatar";
 
 /** Resolved through the package's own exports rather than by relative path,
  * for the reason the README gives for the apps doing the same: a path that goes
  * through `exports` breaks loudly if the package is restructured, and
  * `./package.json` is an export precisely so tooling can find the root. */
 const README = join(
-  dirname(Bun.resolveSync("blobatar/package.json", import.meta.dir)),
+  dirname(Bun.resolveSync("sketchy-blobatar/package.json", import.meta.dir)),
   "README.md",
 );
 
@@ -42,16 +42,16 @@ export async function writeLlmsTxt() {
     // two facts a reader of the file rather than the repo would otherwise lack:
     // how to install it, and where the source is.
     .replace(
-      /^(# blobatar\n\n)(.+)\n/,
+      /^(# sketchy-blobatar\n\n)(.+)\n/,
       (_, heading, tagline) =>
-        `${heading}> ${tagline}\n\nInstall: \`bun add blobatar\` (or npm/pnpm/yarn). ` +
+        `${heading}> ${tagline}\n\nInstall: \`bun add sketchy-blobatar\` (or npm/pnpm/yarn). ` +
         `Source and issues: ${REPO}. MIT.\n`,
     )
     // Relative links resolve against the repo, not against this URL. Left
     // alone they would point at `/docs/...` on the site, which does not exist.
     .replace(
       /\]\(\.\/(docs\/[^)]+)\)/g,
-      `](${REPO}/blob/main/packages/blobatar/$1)`,
+      `](${REPO}/blob/main/packages/sketchy-blobatar/$1)`,
     );
 
   await Bun.write(LLMS_PATH, text);

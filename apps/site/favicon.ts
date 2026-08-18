@@ -7,7 +7,7 @@
  * every dev boot, so if the library's shapes or palette ever change, the favicon
  * changes with them instead of quietly becoming a picture of an older version.
  */
-import { blobatar } from "blobatar";
+import { blobatar } from "sketchy-blobatar";
 
 /**
  * A blobatar leaves ~15% margin inside its 100×100 box — right for an avatar

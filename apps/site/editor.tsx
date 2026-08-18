@@ -4,7 +4,7 @@ import { Editor } from "./src/Editor";
 // Before the page's own stylesheet, exactly as `frontend.tsx` does it:
 // `styles.css` cancels the library's hover reaction and both rules are
 // unlayered and equally specific, so the later file wins.
-import "blobatar/motion.css";
+import "sketchy-blobatar/motion.css";
 import "./styles.css";
 
 /*

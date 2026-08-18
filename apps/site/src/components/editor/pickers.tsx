@@ -1,5 +1,5 @@
-import { Blobatar } from "blobatar/react";
-import { palette } from "blobatar";
+import { Blobatar } from "sketchy-blobatar/react";
+import { palette } from "sketchy-blobatar";
 import { SHAPES, TONES } from "@/editor/axes";
 import { cn } from "@/lib/utils";
 

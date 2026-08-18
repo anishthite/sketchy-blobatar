@@ -1,5 +1,5 @@
 {
-  "name": "blobatar-workspace",
+  "name": "sketchy-blobatar-workspace",
   "private": true,
   "type": "module",
   "workspaces": ["packages/*", "apps/*"],
@@ -7,8 +7,8 @@
     "dev": "bun --filter demo dev",
     "site": "bun --filter site dev",
     "build:site": "bun --filter site build",
-    "test": "bun --filter blobatar test",
-    "size": "bun --filter blobatar size",
+    "test": "bun --filter sketchy-blobatar test",
+    "size": "bun --filter sketchy-blobatar size",
     "check": "bun --filter '*' check"
   },
   "devDependencies": {

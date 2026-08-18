@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { Blobatar } from "blobatar/react";
-import { traits as reader } from "blobatar";
+import { Blobatar } from "sketchy-blobatar/react";
+import { traits as reader } from "sketchy-blobatar";
 import { Control } from "@/components/editor/control";
 import { ShapePicker, TonePicker } from "@/components/editor/pickers";
 import { Segmented, SegmentedItem } from "@/components/ui/segmented";
@@ -189,7 +189,7 @@ export function Editor() {
               : `${count} pinned ${count === 1 ? "axis is" : "axes are"} fixed for every name; everything else still comes from the one you pass.`}
           </p>
 
-          <Install command="bun add blobatar" className="mt-2 self-start" />
+          <Install command="bun add sketchy-blobatar" className="mt-2 self-start" />
         </div>
 
         {/*

@@ -10,8 +10,8 @@
  * exactly the doubt the round-trip beat exists to remove.
  */
 
-import { traits } from "blobatar";
-import { motionVars } from "blobatar/animate";
+import { traits } from "sketchy-blobatar";
+import { motionVars } from "sketchy-blobatar/animate";
 
 export const FPS = 30;
 export const WIDTH = 1920;

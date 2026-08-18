@@ -14,7 +14,7 @@
  *    entire claim is "every name gets its own" is the worst possible bug.
  */
 
-import { traits } from "blobatar";
+import { traits } from "sketchy-blobatar";
 import { CROWD } from "../src/names";
 import { COLS, HERO, HERO_COL, HERO_ROW, ROWS } from "../src/timeline";
 

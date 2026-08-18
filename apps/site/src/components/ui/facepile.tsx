@@ -1,4 +1,4 @@
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 import { cn } from "@/lib/utils";
 
 /**

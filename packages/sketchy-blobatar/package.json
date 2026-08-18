@@ -1,14 +1,14 @@
 {
-  "name": "blobatar",
+  "name": "sketchy-blobatar",
   "version": "0.1.0",
   "description": "Deterministic outlined blobatars from any string. No dependencies.",
   "type": "module",
-  "//sideEffects": "Not `false`. That would license bundlers to drop `import \"blobatar/motion.css\"` as dead weight, and animated blobatars would silently render static for everyone shipping through a bundler.",
+  "//sideEffects": "Not `false`. That would license bundlers to drop `import \"sketchy-blobatar/motion.css\"` as dead weight, and animated blobatars would silently render static for everyone shipping through a bundler.",
   "sideEffects": ["*.css"],
   "files": ["dist", "src", "README.md", "LICENSE"],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "//exports": "Built JS for everyone. What the workspace apps use in development is not this map — they alias `blobatar/*` back to `src` through tsconfig paths, so editing a curve shows up in the tuning grid on save. Keeping one resolution here means the published package resolves identically under every runtime and bundler.",
+  "//exports": "Built JS for everyone. What the workspace apps use in development is not this map — they alias `sketchy-blobatar/*` back to `src` through tsconfig paths, so editing a curve shows up in the tuning grid on save. Keeping one resolution here means the published package resolves identically under every runtime and bundler.",
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
     "./blob": { "types": "./dist/blob.d.ts", "default": "./dist/blob.js" },
@@ -48,9 +48,9 @@
   "author": "Alain",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Alain00/blobatar.git",
-    "directory": "packages/blobatar"
+    "url": "git+https://github.com/anishthite/sketchy-blobatar.git",
+    "directory": "packages/sketchy-blobatar"
   },
-  "homepage": "https://github.com/Alain00/blobatar#readme",
-  "bugs": "https://github.com/Alain00/blobatar/issues"
+  "homepage": "https://github.com/anishthite/sketchy-blobatar#readme",
+  "bugs": "https://github.com/anishthite/sketchy-blobatar/issues"
 }

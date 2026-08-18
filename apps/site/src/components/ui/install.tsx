@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
  * The install command.
  *
  * The whole pill is the button, not an icon parked at one end of it. Nobody
- * reads `bun add blobatar` to learn it — they read it to take it — so the
+ * reads `bun add sketchy-blobatar` to learn it — they read it to take it — so the
  * target should be the thing they are looking at rather than a 16px square
  * beside it. The icon stays as the affordance that says this is takeable.
  *

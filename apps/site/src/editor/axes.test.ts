@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { traits as reader } from "blobatar";
+import { traits as reader } from "sketchy-blobatar";
 import { AXES, SHAPES, TONES, bandIndex, bandValue, round3 } from "./axes";
 import { blobLayout, resolved } from "./resolved";
 

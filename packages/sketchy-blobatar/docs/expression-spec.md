@@ -17,7 +17,7 @@ and still breathing. Read §3 of the motion spec (the amp model) before §4 here
 ## 1. What an expression is, and is not
 
 **It is a value, not a name.** Expressions are imported from
-`blobatar/expression` and passed in — `blobatar()` never imports that module, it
+`sketchy-blobatar/expression` and passed in — `blobatar()` never imports that module, it
 calls through whatever object it is handed. So a consumer who imports `happy`
 ships `happy`, and one who imports nothing carries no pose code at all. As a
 plain string option this cost every caller ~420 B for a feature most will never
@@ -488,7 +488,7 @@ needs no registration at all — see §11.
 
 **Baking the pose into the animated path too.** Presentation attributes lose to
 CSS, so emitting both would be safe and would give an app that forgot
-`import "blobatar/motion.css"` a correct static pose instead of a blank face.
+`import "sketchy-blobatar/motion.css"` a correct static pose instead of a blank face.
 Rejected at ~40 bytes per blobatar: the README already makes the stylesheet a hard
 requirement in bold, so this pays on every blobatar in a 400-blobatar grid to soften
 an error that is already documented loudly.
@@ -503,7 +503,7 @@ Measured through `scripts/size.ts`:
 
 | import                           | gz            |
 | -------------------------------- | ------------- |
-| `blobatar/blob`, no expressions | 3733 B        |
+| `sketchy-blobatar/blob`, no expressions | 3733 B        |
 | `+ happy`                        | 4041 B (+308) |
 | `+ sad`                          | 4093 B (+52)  |
 | `+ mad`                          | 4792 B (+699) |
@@ -597,5 +597,5 @@ always-valid rather than class-gated, and class-gating is what reintroduces the
 pop.
 
 The attribute stays and is not dead weight — it is what an app that forgot
-`import "blobatar/motion.css"` renders, and what the static path has always
+`import "sketchy-blobatar/motion.css"` renders, and what the static path has always
 used.

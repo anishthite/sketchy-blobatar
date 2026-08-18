@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 import { Easing, interpolate, useCurrentFrame } from "remotion";
 import { MONO, SANS } from "./fonts";
 import { CROWD } from "./names";
@@ -25,7 +25,7 @@ import {
   WIDTH,
   heroName,
 } from "./timeline";
-import "blobatar/motion.css";
+import "sketchy-blobatar/motion.css";
 import "./seek.css";
 
 const BG = "#0b0b0c";

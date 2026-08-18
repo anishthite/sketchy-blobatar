@@ -29,13 +29,13 @@ jobs:
       - run: bun install --frozen-lockfile
 
       - name: Typecheck
-        run: bunx tsc -p packages/blobatar/tsconfig.json --noEmit
+        run: bunx tsc -p packages/sketchy-blobatar/tsconfig.json --noEmit
 
       - name: Tests
-        run: bun --filter blobatar test
+        run: bun --filter sketchy-blobatar test
 
       - name: Size budgets
-        run: bun --filter blobatar size
+        run: bun --filter sketchy-blobatar size
 
       # `probe-compose.ts` warns and exits 0 when it finds no browser, so that a
       # local run without one is not a hard stop. In CI that would turn the only
@@ -47,23 +47,23 @@ jobs:
           firefox --version
 
       - name: Composition gate
-        run: bun --filter blobatar probe
+        run: bun --filter sketchy-blobatar probe
 
       - name: Build
-        run: bun --filter blobatar build
+        run: bun --filter sketchy-blobatar build
 
       # Links the built package under Node, through its own `exports` map. This
       # is the step that catches a dist that is broken for everyone outside Bun.
       - name: Smoke the built package
-        run: bun --filter blobatar smoke
+        run: bun --filter sketchy-blobatar smoke
 
       - name: Pack
-        run: npm pack --workspace blobatar --pack-destination /tmp
+        run: npm pack --workspace sketchy-blobatar --pack-destination /tmp
 
       - uses: actions/upload-artifact@v4
         with:
           name: tarball
-          path: /tmp/blobatar-*.tgz
+          path: /tmp/sketchy-blobatar-*.tgz
           retention-days: 7
 
   apps:
@@ -78,7 +78,7 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      # The apps resolve `blobatar/*` to source through tsconfig paths, so this
+      # The apps resolve `sketchy-blobatar/*` to source through tsconfig paths, so this
       # builds the library from source as a side effect — which is the point: it
       # is the check that an alias and the package's `exports` have not drifted
       # apart into two different libraries.

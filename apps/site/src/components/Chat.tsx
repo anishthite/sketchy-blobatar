@@ -1,4 +1,4 @@
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Facepile } from "@/components/ui/facepile";
 import { useNearViewport } from "@/lib/near-viewport";

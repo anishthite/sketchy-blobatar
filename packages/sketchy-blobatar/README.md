@@ -1,15 +1,15 @@
-# blobatar
+# sketchy-blobatar
 
 Deterministic outlined blobatars from any string. No dependencies, ~4 KB gzipped.
 
 ```ts
-import { blobatar } from "blobatar";
+import { blobatar } from "sketchy-blobatar";
 
 blobatar("alain@example.com"); // => '<svg xmlns="..." viewBox="0 0 100 100">…'
 ```
 
 ```tsx
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 
 <Blobatar name={user.email} size={48} />;
 ```
@@ -20,7 +20,7 @@ name, an email, a handle, an id. Any string works and the same string always
 renders the same blobatar.
 
 ```ts
-import { blobatarUri } from "blobatar/uri";
+import { blobatarUri } from "sketchy-blobatar/uri";
 
 el.style.backgroundImage = `url("${blobatarUri(user.id)}")`;
 ```
@@ -37,7 +37,7 @@ The main entry also carries the palette and trait utilities. If all you do is
 render, import the renderer on its own and save about a kilobyte:
 
 ```ts
-import { blobatar } from "blobatar/blob";
+import { blobatar } from "sketchy-blobatar/blob";
 ```
 
 ## Styles
@@ -133,8 +133,8 @@ the occasional glance to one side. Every timing and direction is drawn from the
 name, so a grid reads as a crowd rather than a drill team.
 
 ```tsx
-import { Blobatar } from "blobatar/react";
-import "blobatar/motion.css"; // required — nothing animates without it
+import { Blobatar } from "sketchy-blobatar/react";
+import "sketchy-blobatar/motion.css"; // required — nothing animates without it
 
 <Blobatar name={user.email} animate="hover" size={48} />;
 ```
@@ -158,7 +158,7 @@ pixel. It is worth the most on a profile header, which is what `"always"` is
 for. Eyes may cross outside the body outline on a hard glance; that is intended,
 and reads as a face turning rather than as a bug.
 
-Currently `blobatar/react` only. The string API still returns static markup:
+Currently `sketchy-blobatar/react` only. The string API still returns static markup:
 supporting `animate` there means every consumer of `blobatar()` carries the motion
 code whether they animate or not, which is a real cost for a feature most
 callers will never use. If you need animated markup without React, open an issue
@@ -174,7 +174,7 @@ Expressions are **imported as values, not named as strings**, so you ship the
 ones you use and nothing else:
 
 ```tsx
-import { happy, idle } from "blobatar/expression";
+import { happy, idle } from "sketchy-blobatar/expression";
 
 <Blobatar name={user.email} animate="always" expression={happy} size={64} />;
 ```
@@ -258,7 +258,7 @@ bun run size   # per-entry gzip budgets
 bun run check
 ```
 
-Both apps depend on `blobatar` as `workspace:*` and import it by its public
+Both apps depend on `sketchy-blobatar` as `workspace:*` and import it by its public
 entry points, so they resolve through the real `exports` map rather than by
 relative path — breaking an export breaks their build. See
 [ADR-0001](../../docs/adr/0001-bun-workspaces-without-turborepo.md).

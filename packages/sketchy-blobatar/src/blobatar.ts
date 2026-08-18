@@ -70,7 +70,7 @@ const motion = (mode: Animate, e?: Expression, variant?: BlobatarVariant) => (t:
 /**
  * The `<svg>` contents and its motion custom properties, separately.
  *
- * For renderers that own the outer element themselves — `blobatar/react` when
+ * For renderers that own the outer element themselves — `sketchy-blobatar/react` when
  * animating. Underscored because the shape of this object is not public API.
  */
 export function _parts(name: string, opts: BlobatarOptions = {}) {
