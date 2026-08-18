@@ -56,10 +56,6 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
-  }
-
-  :root[data-theme="light"] {
     color-scheme: light;
     --color-ground: #f7f6f2;
     --color-raised: #fffefa;
@@ -70,11 +66,22 @@
     --color-code-key: oklch(0.5 0.08 265);
   }
 
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-ground: #0a0a0b;
+    --color-raised: #131315;
+    --color-ink: #fafaf8;
+    --color-muted: #8a8a93;
+    --color-line: #232327;
+    --color-code-str: oklch(0.83 0.07 165);
+    --color-code-key: oklch(0.78 0.055 265);
+  }
+
   /* Blobatars are authored to clear the dark site surface. On paper-light
      ground, darkening only their final SVG keeps every seeded hue legible
      without changing the page tokens or the colours of the easter-egg marks. */
-  :root[data-theme="light"] img[src^="data:image/svg+xml"],
-  :root[data-theme="light"] svg[viewBox="0 0 100 100"]:has(> g.mo-root) {
+  :root:not([data-theme="dark"]) img[src^="data:image/svg+xml"],
+  :root:not([data-theme="dark"]) svg[viewBox="0 0 100 100"]:has(> g.mo-root) {
     filter: brightness(0.62) saturate(1.2);
   }
 

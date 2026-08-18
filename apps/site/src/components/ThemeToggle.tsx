@@ -10,13 +10,14 @@ function apply(theme: Theme) {
 
 /** A small, persistent appearance switch shared by the landing page and editor. */
 export function ThemeToggle() {
-  // Start dark so prerendering and hydration agree; a saved preference is applied
-  // immediately after mount and persists across the two standalone documents.
-  const [theme, setTheme] = useState<Theme>("dark");
+  // Start light so prerendering and hydration agree; a saved preference is
+  // applied immediately after mount and persists across the two standalone
+  // documents.
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
     const saved = window.localStorage.getItem(KEY);
-    const next: Theme = saved === "light" ? "light" : "dark";
+    const next: Theme = saved === "dark" ? "dark" : "light";
     setTheme(next);
     apply(next);
   }, []);
