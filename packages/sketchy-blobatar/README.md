@@ -190,8 +190,9 @@ callers will never use. If you need animated markup without React, open an issue
 ## Expressions
 
 A pose the blobatar holds until you change it — `idle` (the default), `happy`,
-`sad`, `mad`, `sleepy`, `excited`, `suspicious`, or `bashful`. Setting one
-morphs from whatever it was wearing.
+`sad`, `mad`, `sleepy`, `excited`, `suspicious`, `bashful`, `surprised`,
+`wink`, `smug`, `unsure`, `scared`, `love`, `shy`, or `sick`. Setting one morphs
+from whatever it was wearing.
 
 Expressions are **imported as values, not named as strings**, so you ship the
 ones you use and nothing else:

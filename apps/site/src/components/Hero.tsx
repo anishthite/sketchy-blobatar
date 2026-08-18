@@ -6,10 +6,18 @@ import {
   excited,
   happy,
   idle,
+  love,
   mad,
   sad,
+  scared,
+  shy,
+  sick,
   sleepy,
+  smug,
+  surprised,
   suspicious,
+  unsure,
+  wink,
   type Expression,
 } from "sketchy-blobatar/expression";
 import { Segmented, SegmentedItem } from "@/components/ui/segmented";
@@ -79,6 +87,14 @@ const POSES = [
   { name: "excited", value: excited },
   { name: "suspicious", value: suspicious },
   { name: "bashful", value: bashful },
+  { name: "surprised", value: surprised },
+  { name: "wink", value: wink },
+  { name: "smug", value: smug },
+  { name: "unsure", value: unsure },
+  { name: "scared", value: scared },
+  { name: "love", value: love },
+  { name: "shy", value: shy },
+  { name: "sick", value: sick },
 ] as const;
 
 type Pose = (typeof POSES)[number];
@@ -234,6 +250,8 @@ export function Hero() {
   useEffect(() => () => clearTimeout(release.current ?? undefined), []);
 
   const shown = burst ?? pose.value;
+  /** Whether the picked pose is one of the ones the row hides. */
+  const extra = MORE.some((p) => p.name === pose.name);
   const tuned =
     bg !== "none" ||
     hue !== null ||
@@ -567,13 +585,23 @@ export function Hero() {
                   a set of strangers.
                 */}
                 <Field label="mood">
-                  <div className="grid grid-cols-4 gap-1" role="group" aria-label="Mood">
-                    {POSES.map((p) => (
-                      <button
-                        key={p.name}
-                        type="button"
-                        onClick={() => pick(p)}
-                        aria-pressed={pose.name === p.name}
+                  <div className="flex flex-col gap-1">
+                    <div className="grid grid-cols-4 gap-1" role="group" aria-label="Mood">
+                      {POSES.slice(0, SHOWN).map((p) => (
+                        <PoseTile
+                          key={p.name}
+                          pose={p}
+                          seed={seed}
+                          opts={opts}
+                          selected={pose.name === p.name}
+                          onClick={() => pick(p)}
+                        />
+                      ))}
+                    </div>
+
+                    <Popover open={more} onOpenChange={setMore}>
+                      <PopoverTrigger
+                        aria-label={`${MORE.length} more expressions`}
                         className={cn(
                           "flex items-center justify-center gap-1.5 rounded-xl py-1.5",
                           "font-mono text-[0.65rem] lowercase transition-colors duration-150",
@@ -586,13 +614,6 @@ export function Hero() {
                         <ChevronIcon down={!wide} />
                       </PopoverTrigger>
 
-                      {/*
-                        Anchored to the row it opens from, and sided the same way
-                        the options panel is — beside it on a wide screen, under
-                        it on a narrow one. Radix flips either when the viewport
-                        says otherwise, which is what stops a second panel from
-                        walking off the right edge on a 1024px window.
-                      */}
                       <PopoverContent
                         side={wide ? "right" : "bottom"}
                         align={wide ? "start" : "center"}
@@ -600,17 +621,7 @@ export function Hero() {
                         collisionPadding={16}
                         className="max-h-[var(--radix-popover-content-available-height)] w-72 overflow-y-auto"
                       >
-                        <div
-                          className="grid grid-cols-4 gap-1"
-                          role="group"
-                          aria-label="All expressions"
-                        >
-                          {/*
-                            The whole roster, not just the ones behind the row.
-                            A picker that
-                            hides what you already chose makes you close it to
-                            find out whether you chose it.
-                          */}
+                        <div className="grid grid-cols-4 gap-1" role="group" aria-label="All expressions">
                           {POSES.map((p) => (
                             <PoseTile
                               key={p.name}

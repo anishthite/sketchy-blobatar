@@ -1,7 +1,8 @@
 # Expression spec
 
 Named poses a consumer sets and the library holds — `idle`, `happy`, `sad`,
-`mad`, `sleepy`, `excited`, `suspicious`, `bashful` — and the morph between them.
+`mad`, `sleepy`, `excited`, `suspicious`, `bashful`, `surprised`, `wink`, `smug`,
+`unsure`, `scared`, `love`, `shy`, `sick` — and the morph between them.
 
 > Six defects found after this first landed are fixed; see
 > [expression-followups.md](./expression-followups.md) for what they were.
@@ -206,16 +207,15 @@ already existed, so `motion.css` learned nothing new:
 | ----------- | ---- | ---- | ---- | ----- | ---- | ----- | ----- | ----- | ---- | ---- | ----- | ---- |
 | `surprised` | 1.34 | 1.2  | −6   | −1.05 | 0.5  | 0.05  | 0.07  | 3     | 1    | 0    | 0     | −1.4 |
 | `wink`      | 1.32 | 0.76 | 5    | −0.6  | 0.8  | 0.26  | −0.56 | −11   | 1    | 0    | 0     | −1.1 |
-| `sleepy`    | 1.14 | 0.22 | 0    | 2.4   | 0.3  | −0.04 | 0.03  | 4     | 1    | 0    | 0     | 1.2  |
 | `smug`      | 1.3  | 0.42 | 18   | −0.5  | 0.5  | 0.06  | −0.06 | −36   | 1    | 0    | 0     | −1   |
 | `unsure`    | 0.95 | 1.02 | 4    | −0.2  | 0.3  | 0.24  | −0.44 | −18   | 1    | 0    | 0     | 0    |
 | `scared`    | 0.78 | 0.96 | −12  | −1.5  | −0.8 | −0.04 | 0.05  | 4     | 1    | 0    | 0.35  | −0.6 |
 
 Four things about that table are the design rather than the tuning:
 
-- **`surprised` is the only pose that goes _up_ on `esy`.** Everything in the
-  first roster lives between 0.26 and 0.56, so a pose at 1.26 cannot be confused
-  with any of them at any size. It is also the first pose in this feature where
+- **`surprised` is the tallest pose.** `excited` is the closest existing pose at
+  1.14, but `surprised` still reaches 1.20 and is separated by its outward,
+  lifted stare. It is also the first pose in this feature where
   **containment binds rather than fusion** — growing the pair and lifting it push
   the eye corners toward the outline, which is why its `esy` came back down from
   1.34 to 1.20 across two tuning passes. It is the only pose in the library whose
@@ -224,12 +224,6 @@ Four things about that table are the design rather than the tuning:
   them. `happy` sets `esy2` to 0.05 explicitly to stay short of a wink; `wink` is
   that channel eleven times over. This is the shape no amount of amplitude on a
   symmetric pose can imitate, and the payoff for §5.1 existing at all.
-- **`sleepy`'s nearest neighbour is `mad`, not `sad`.** Both are landscape bars,
-  and at 44px the bar is most of what reads. It survives on `tilt` (0 against
-  −33), `edy` (+2.4 against +0.4), and the tint and tremor it does not carry —
-  three channels, per the §2 rule. Its `tilt: 0` under `lock: 1` is not a no-op:
-  a level pair is what reads as lidded, and a seed's 12° lean turns that into
-  suspicion.
 - **`scared` spends `shake` without `heat`**, which is the point of listing it
   next to `mad`: a tremor is arousal, not anger, and a consumer who wants a
   frightened blobatar should not pay ~700 B of colour code for it. At 0.35
@@ -243,10 +237,10 @@ attitude, which is the whole distance between this pose and `mad`.
 
 Measured headroom for the second roster, same 4000 seeds:
 
-| guard                                 | surprised | wink | sleepy | smug | unsure | scared | limit  |
-| ------------------------------------- | --------- | ---- | ------ | ---- | ------ | ------ | ------ |
-| worst fusion clearance, viewBox units | 4.27      | 5.16 | 6.10   | 4.39 | 4.79   | 3.46   | > 2    |
-| worst eye-corner reach, × body radius | 1.05      | 0.89 | 0.73   | 0.81 | 0.90   | 0.88   | < 1.12 |
+| guard                                 | surprised | wink | smug | unsure | scared | limit  |
+| ------------------------------------- | --------- | ---- | ---- | ------ | ------ | ------ |
+| worst fusion clearance, viewBox units | 4.27      | 5.16 | 4.39 | 4.79   | 3.46   | > 2    |
+| worst eye-corner reach, × body radius | 1.05      | 0.89 | 0.81 | 0.90   | 0.88   | < 1.12 |
 
 `scared` is the tight one on clearance for the obvious reason — convergence
 spends clearance directly. It narrows the eyes on the way in and buys most of it

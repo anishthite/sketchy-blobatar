@@ -25,10 +25,18 @@ import {
   excited,
   happy,
   idle,
+  love,
   mad,
   sad,
+  scared,
+  shy,
+  sick,
   sleepy,
+  smug,
+  surprised,
   suspicious,
+  unsure,
+  wink,
 } from "sketchy-blobatar/expression";
 import { Blobatar } from "sketchy-blobatar/react";
 
@@ -59,7 +67,7 @@ check("blobatar()", () => `${svg(blobatar("alain@example.com"), "blobatar").leng
 check("blobatar/blob", () => `${svg(blob("alain"), "blob").length} chars`);
 
 check("blobatar/expression", () => {
-  for (const [name, pose] of Object.entries({
+  const expressions = {
     happy,
     mad,
     sad,
@@ -68,11 +76,20 @@ check("blobatar/expression", () => {
     suspicious,
     bashful,
     idle,
-  })) {
+    surprised,
+    wink,
+    smug,
+    unsure,
+    scared,
+    love,
+    shy,
+    sick,
+  };
+  for (const [name, pose] of Object.entries(expressions)) {
     assert(pose != null, `${name} is not exported`);
     svg(blob("alain", { expression: pose }), `blob + ${name}`);
   }
-  return "happy, mad, sad, sleepy, excited, suspicious, bashful, idle";
+  return Object.keys(expressions).join(", ");
 });
 
 check("blobatar/uri", () => {

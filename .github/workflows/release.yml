@@ -69,5 +69,3 @@ jobs:
       # trust: the publisher is registered against `release.yml` by name.
       - name: Publish
         run: npm publish --workspace sketchy-blobatar --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

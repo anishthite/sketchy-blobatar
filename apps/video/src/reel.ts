@@ -4,8 +4,8 @@
  *
  * Same rule as `timeline.ts`: one continuous shot, no cuts. The blobatar that
  * opens on `idle` is the same element that ends up in the roster grid wearing
- * `sick`, because the claim is that one creature wears thirteen faces — and a
- * cut would let a viewer suspect thirteen creatures.
+ * `sick`, because the claim is that one creature wears twelve faces — and a
+ * cut would let a viewer suspect twelve creatures.
  */
 
 import {
@@ -19,16 +19,15 @@ import {
   scared,
   shy,
   sick,
-  sleepy,
   smug,
   surprised,
   unsure,
   wink,
   type Expression,
   type Pose,
-} from "blobatar/expression";
-import { traits } from "blobatar";
-import { motionVars } from "blobatar/animate";
+} from "sketchy-blobatar/expression";
+import { traits } from "sketchy-blobatar";
+import { motionVars } from "sketchy-blobatar/animate";
 import { FPS, HEIGHT, WIDTH } from "./timeline";
 
 export { FPS, HEIGHT, WIDTH } from "./timeline";
@@ -47,7 +46,7 @@ export const OLD: readonly Slot[] = [
 ];
 
 /**
- * The nine, in the order `expression.ts` declares them.
+ * The eight additions, in the order `expression.ts` declares them.
  *
  * Declaration order, not a ranking and not a "best first" cut, because that
  * order is already the argument the module makes: the six cool poses, then the
@@ -57,7 +56,6 @@ export const OLD: readonly Slot[] = [
 export const NEW: readonly Slot[] = [
   { name: "surprised", e: surprised },
   { name: "wink", e: wink },
-  { name: "sleepy", e: sleepy },
   { name: "smug", e: smug },
   { name: "unsure", e: unsure },
   { name: "scared", e: scared },
@@ -75,7 +73,7 @@ export const B_GRID = REEL_FROM + SLOT * NEW.length;
 export const B_CARD = B_GRID + 66;
 export const END = B_CARD + 96;
 
-/** How long the hero takes to fly into its cell and the other twelve to arrive. */
+/** How long the hero takes to fly into its cell and the other eleven to arrive. */
 export const GRID_IN = 30;
 
 /**
@@ -154,7 +152,7 @@ const mixPal = (a: Palette, b: Palette, t: number): Palette => {
  * an infinite `@keyframes` into a fixed point in its local time; a transition
  * has no local time to seek to — it is driven by wall clock from whenever the
  * class changed, and Remotion renders each frame in a tab that never saw the
- * previous one. Left alone the reel would render nine snaps.
+ * previous one. Left alone the reel would render eight snaps.
  *
  * So the morph is re-derived here on the pose channels, which is where the
  * library interpolates it anyway — `motion.css` transitions the same twelve
@@ -198,13 +196,13 @@ export const reelAt = (frame: number) => {
  * The grid, as rows.
  *
  * Four, five, four. The first row is the roster that already existed and the
- * two below it are the nine, so the shape of the announcement is legible before
+ * two below it are the eight, so the shape of the announcement is legible before
  * a single label is read — and the split falls exactly where the release does.
  */
 export const ROWS: readonly (readonly Slot[])[] = [
   OLD,
-  NEW.slice(0, 5),
-  NEW.slice(5),
+  NEW.slice(0, 4),
+  NEW.slice(4),
 ];
 
 export const CELL = 210;
@@ -251,7 +249,7 @@ const BLINK_CLOSED = 0.986;
 const ms = (frame: number) => (frame / FPS) * 1000;
 
 /**
- * The frames where the creature is mid-move: the nine morphs and the fly into
+ * The frames where the creature is mid-move: the eight morphs and the fly into
  * the grid.
  */
 const BUSY: readonly (readonly [number, number])[] = [
@@ -273,7 +271,7 @@ const BUSY: readonly (readonly [number, number])[] = [
  *
  * The launch film solves this by shifting the whole film until the blinks land
  * where the edit wants them. That does not work here and the arithmetic says why:
- * nine morphs of 433ms each, one every 1.2s, forbid about two thirds of the
+ * eight morphs of 433ms each, one every 1.2s, forbid about two thirds of the
  * timeline, and three blinks all have to miss. A scan of every offset in a blink
  * period finds exactly zero that clear.
  *
@@ -335,10 +333,10 @@ export const TIME_OFFSET = solveOffset();
  * Per-tile phase, so the roster does not blink as one.
  *
  * Every tile is the same name — that is the claim the grid is making, one
- * creature wearing thirteen faces — and a name is what seeds the idle loops. So
- * the thirteen breathe, bob and blink in exact unison, which is the failure
+ * creature wearing twelve faces — and a name is what seeds the idle loops. So
+ * the twelve breathe, bob and blink in exact unison, which is the failure
  * `motionVars` exists to prevent in a crowd, arriving here through the front
- * door. Thirteen creatures blinking on the same frame is a strobe, not a grid.
+ * door. Twelve creatures blinking on the same frame is a strobe, not a grid.
  *
  * Overriding the phases rather than the seed keeps the claim true: same shape,
  * same colour, same face, different moment. Golden-ratio spacing rather than

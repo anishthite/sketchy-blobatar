@@ -9,6 +9,7 @@
     "build:site": "bun --filter site build",
     "test": "bun --filter sketchy-blobatar test",
     "size": "bun --filter sketchy-blobatar size",
+    "media": "bun scripts/media.ts",
     "check": "bun --filter '*' check"
   },
   "devDependencies": {

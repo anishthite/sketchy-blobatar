@@ -26,10 +26,18 @@ import {
   excited,
   happy,
   idle,
+  love,
   mad,
   sad,
+  scared,
+  shy,
+  sick,
   sleepy,
+  smug,
+  surprised,
   suspicious,
+  unsure,
+  wink,
   type Expression,
 } from "../src/expression";
 
@@ -139,6 +147,14 @@ const POSES: [string, Expression | undefined][] = [
   ["excited", excited],
   ["suspicious", suspicious],
   ["bashful", bashful],
+  ["surprised", surprised],
+  ["wink", wink],
+  ["smug", smug],
+  ["unsure", unsure],
+  ["scared", scared],
+  ["love", love],
+  ["shy", shy],
+  ["sick", sick],
 ];
 
 /**

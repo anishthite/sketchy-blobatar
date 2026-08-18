@@ -23,8 +23,10 @@
 import { mkdirSync, rmSync, writeFileSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { blobatar } from "../packages/blobatar/src/blobatar";
+import { blobatar } from "../packages/sketchy-blobatar/src/blobatar";
 import {
+  bashful,
+  excited,
   happy,
   love,
   mad,
@@ -35,11 +37,12 @@ import {
   sleepy,
   smug,
   surprised,
+  suspicious,
   unsure,
   wink,
   type Expression,
-} from "../packages/blobatar/src/expression";
-import type { BlobatarOptions } from "../packages/blobatar/src/render";
+} from "../packages/sketchy-blobatar/src/expression";
+import type { BlobatarOptions } from "../packages/sketchy-blobatar/src/render";
 
 const ROOT = join(import.meta.dir, "..");
 const MEDIA = join(ROOT, "docs/media");
@@ -328,7 +331,7 @@ const SHAPES = [
 const HUES = [12, 40, 78, 140, 190, 225, 275, 320];
 
 /**
- * The whole roster, in the order `expression-spec.md` introduces it. Thirteen
+ * The whole roster, in the order `expression-spec.md` introduces it. Sixteen
  * cells at this size are wider than the sheet, so the row is split in two —
  * `EXPRESSION_ROWS` is where that break lives, not a claim about the poses.
  */
@@ -337,9 +340,12 @@ const EXPRESSIONS: { label: string; value?: Expression }[] = [
   { label: "happy", value: happy },
   { label: "sad", value: sad },
   { label: "mad", value: mad },
+  { label: "sleepy", value: sleepy },
+  { label: "excited", value: excited },
+  { label: "suspicious", value: suspicious },
+  { label: "bashful", value: bashful },
   { label: "surprised", value: surprised },
   { label: "wink", value: wink },
-  { label: "sleepy", value: sleepy },
   { label: "smug", value: smug },
   { label: "unsure", value: unsure },
   { label: "scared", value: scared },
@@ -348,7 +354,7 @@ const EXPRESSIONS: { label: string; value?: Expression }[] = [
   { label: "sick", value: sick },
 ];
 
-const EXPRESSION_ROWS = [EXPRESSIONS.slice(0, 7), EXPRESSIONS.slice(7)];
+const EXPRESSION_ROWS = [EXPRESSIONS.slice(0, 8), EXPRESSIONS.slice(8)];
 
 const BACKGROUNDS = ["none", "squircle", "circle", "square"] as const;
 

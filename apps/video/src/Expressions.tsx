@@ -1,6 +1,6 @@
 import type { CSSProperties, FC } from "react";
-import { Blobatar } from "blobatar/react";
-import { idle, type Expression } from "blobatar/expression";
+import { Blobatar } from "sketchy-blobatar/react";
+import { idle, type Expression } from "sketchy-blobatar/expression";
 import { Easing, interpolate, useCurrentFrame } from "remotion";
 import { MONO, SANS } from "./fonts";
 import {
@@ -28,7 +28,7 @@ import {
   tilePhase,
   type Slot,
 } from "./reel";
-import "blobatar/motion.css";
+import "sketchy-blobatar/motion.css";
 import "./seek.css";
 
 const BG = "#0b0b0c";
@@ -152,7 +152,7 @@ const Caption: FC<{ frame: number }> = ({ frame }) => {
  * The blobatar is centred on the cell's centre and the label hangs below it
  * absolutely, rather than the two sharing a flow. That is what lets the hero —
  * which is not in this component at all, and never enters it — park on the same
- * point and line up with the twelve around it.
+ * point and line up with the eleven around it.
  */
 const Tile: FC<{
   slot: Slot;
@@ -176,8 +176,8 @@ const Tile: FC<{
         height: CELL,
         display: "grid",
         placeItems: "center",
-        // The four that already shipped sit back so the nine read as the news.
-        // Dimmed rather than omitted: "nine new" is a claim about a roster, and
+        // The four that already shipped sit back so the eight read as the news.
+        // Dimmed rather than omitted: "eight new" is a claim about a roster, and
         // the roster has to be on screen for the claim to mean anything.
         opacity: arrive * (fresh ? 1 : 0.4),
         transform: `scale(${pop})`,
@@ -213,7 +213,7 @@ const Tile: FC<{
  * The end card, under the grid rather than beside it.
  *
  * The launch film puts the wordmark next to the creature because it has one
- * creature. This one has thirteen and they are the point, so the card takes the
+ * creature. This one has twelve and they are the point, so the card takes the
  * bottom strip and the grid keeps the frame.
  */
 const Card: FC<{ frame: number }> = ({ frame }) => {
@@ -245,10 +245,10 @@ const Card: FC<{ frame: number }> = ({ frame }) => {
           color: TEXT,
         }}
       >
-        nine new expressions
+        eight new expressions
       </div>
       <div style={{ fontFamily: MONO, fontSize: 25, color: MUTED }}>
-        npm i blobatar
+        npm i sketchy-blobatar
       </div>
       <div
         style={{
@@ -281,7 +281,7 @@ const Kicker: FC<{ frame: number }> = ({ frame }) => (
       opacity: ramp(frame, 0, 18, 0, 1) * ramp(frame, B_GRID - 14, B_GRID, 1, 0),
     }}
   >
-    blobatar · one name, thirteen faces
+    sketchy-blobatar · one name, twelve faces
   </div>
 );
 

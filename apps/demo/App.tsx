@@ -6,7 +6,25 @@ import {
   type BlobatarOptions,
 } from "sketchy-blobatar";
 import { layout } from "sketchy-blobatar/blob";
-import { happy, idle, mad, sad, type Expression } from "sketchy-blobatar/expression";
+import {
+  bashful,
+  excited,
+  happy,
+  idle,
+  love,
+  mad,
+  sad,
+  scared,
+  shy,
+  sick,
+  sleepy,
+  smug,
+  surprised,
+  suspicious,
+  unsure,
+  wink,
+  type Expression,
+} from "sketchy-blobatar/expression";
 import { Blobatar } from "sketchy-blobatar/react";
 
 /**
@@ -46,6 +64,9 @@ const EXPRESSIONS: Record<string, Expression | null> = {
   happy,
   sad,
   mad,
+  excited,
+  suspicious,
+  bashful,
   surprised,
   wink,
   sleepy,
@@ -191,9 +212,9 @@ export function App() {
             expression
             <select
               value={expr}
-              onChange={(e) => setExpr(e.target.value as ExprMode)}
+              onChange={(e) => setExpr(e.target.value as keyof typeof EXPRESSIONS)}
             >
-              {EXPRESSIONS.map((e) => (
+              {Object.keys(EXPRESSIONS).map((e) => (
                 <option key={e}>{e}</option>
               ))}
             </select>

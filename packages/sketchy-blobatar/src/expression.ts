@@ -578,38 +578,6 @@ export const wink: Expression = {
 };
 
 /**
- * Flat bars with no angle in them, sitting low over a sunk body.
- *
- * The nearest neighbour is `mad`, not `sad` — both are landscape bars, and at
- * 44px the silhouette of a flat capsule is most of what reads. The separation is
- * `tilt` (0 against −33), `edy` (+2.4 against +0.4) and the tint and tremor
- * `mad` carries and this does not. That is three channels, which is the §2 rule
- * and the reason this pose is safe rather than a second angry face.
- *
- * `tilt: 0` under `lock: 1` is not a no-op: it cancels the seeded lean, which is
- * the whole point — a level pair of bars is what reads as lidded, and a seed's
- * 12° lean on that pose reads as suspicion instead.
- */
-export const sleepy: Expression = {
-  p: {
-    esx: 1.14,
-    esy: 0.22,
-    tilt: 0,
-    edy: 2.4,
-    edx: 0.3,
-    esx2: -0.04,
-    esy2: 0.03,
-    tilt2: 4,
-    lock: 1,
-    heat: 0,
-    shake: 0,
-    bdy: 1.2,
-  },
-  vars: poseVars,
-  bake: bakePose,
-};
-
-/**
  * Half-lidded, lifted, and leaning in parallel.
  *
  * `tilt2 = −2 × tilt` exactly, which is the `proud-flat.png` trick `happy`
