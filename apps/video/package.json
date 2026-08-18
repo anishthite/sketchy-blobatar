@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts Launch out/launch.mp4",
+    "render:expressions": "remotion render src/index.ts Expressions out/expressions.mp4",
     "render:square": "remotion render src/index.ts LaunchSquare out/launch-square.mp4",
     "still": "remotion still src/index.ts Launch",
     "check": "bun scripts/check-crowd.ts"

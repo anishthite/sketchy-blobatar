@@ -3,6 +3,8 @@
 Deterministic outlined blobatars from any string. No dependencies, ~4 KB
 gzipped.
 
+![A field of forty-odd blobatars, no two alike, each generated from an ordinary handle like alain, tove or kasper](./docs/media/crowd.png)
+
 ```sh
 bun add sketchy-blobatar    # npm / pnpm / yarn all work too
 ```
@@ -66,6 +68,10 @@ Keys you leave out still come from the name — lock the two things that carry
 your brand, and every user still gets their own creature. Pin everything and the
 name stops mattering, which is how you build one fixed blobatar.
 
+Every value those options take, and what each one draws:
+
+![The six silhouettes labelled round, organic, boxy, nub, cloud and sun; the eight hue stops from 12 to 320 degrees; the sixteen expressions from idle through happy, sad and mad to love, shy and sick; the four backgrounds none, squircle, circle and square](./docs/media/sheet.png)
+
 ### Animation and expressions
 
 Both are opt-in. `animate` idles the blobatar — breathe, bob, blink, glance —
@@ -99,6 +105,7 @@ bun dev        # tuning grid   → localhost:3001
 bun site       # landing page  → localhost:3000
 bun test       # library tests
 bun run check  # tests + size budgets
+bun run media  # redraw the README images (needs Chrome + ImageMagick)
 ```
 
 [`CONTEXT.md`](./CONTEXT.md) is the glossary — worth two minutes before changing

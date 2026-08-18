@@ -1,6 +1,6 @@
 {
   "name": "sketchy-blobatar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Deterministic outlined blobatars from any string. No dependencies.",
   "type": "module",
   "//sideEffects": "Not `false`. That would license bundlers to drop `import \"sketchy-blobatar/motion.css\"` as dead weight, and animated blobatars would silently render static for everyone shipping through a bundler.",

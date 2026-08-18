@@ -6,7 +6,25 @@ import {
   type BlobatarOptions,
 } from "sketchy-blobatar";
 import { layout } from "sketchy-blobatar/blob";
-import { happy, idle, mad, sad, type Expression } from "sketchy-blobatar/expression";
+import {
+  bashful,
+  excited,
+  happy,
+  idle,
+  love,
+  mad,
+  sad,
+  scared,
+  shy,
+  sick,
+  sleepy,
+  smug,
+  surprised,
+  suspicious,
+  unsure,
+  wink,
+  type Expression,
+} from "sketchy-blobatar/expression";
 import { Blobatar } from "sketchy-blobatar/react";
 
 /**
@@ -32,17 +50,41 @@ const SHAPES = [
 ] as const;
 
 /**
- * `sad|mad` is not a fourth expression — it is the comparison the roster hangs
- * on, rendered as a mode. See `.cell.pair` in index.css.
+ * The `a|b` entries are not expressions — they are the comparisons the roster
+ * hangs on, rendered as modes. See `.cell.pair` in index.css.
+ *
+ * There are two now because the second roster added a second at-risk pair.
+ * `sad|mad` was the original: two poses that have to stay distinct at 44px with
+ * no brows to separate them. `surprised|scared` is its counterpart at the other
+ * end of `esy` — the only two poses that leave the capsule portrait, so they are
+ * the ones that can converge.
  */
 const EXPRESSIONS: Record<string, Expression | null> = {
   idle,
   happy,
   sad,
   mad,
+  excited,
+  suspicious,
+  bashful,
+  surprised,
+  wink,
+  sleepy,
+  smug,
+  unsure,
+  scared,
+  love,
+  shy,
+  sick,
   "sad|mad": null,
+  "surprised|scared": null,
+  "shy|sick": null,
 };
-const PAIR: Expression[] = [sad, mad];
+const PAIRS: Record<string, Expression[]> = {
+  "sad|mad": [sad, mad],
+  "surprised|scared": [surprised, scared],
+  "shy|sick": [shy, sick],
+};
 
 type Bg = "default" | "squircle" | "circle" | "square" | "none";
 
@@ -66,9 +108,11 @@ export function App() {
     [bg, hue, expr],
   );
 
+  const pair = PAIRS[expr];
+
   // Paired cells are twice as wide, so half as many fit a row. Keeping the
   // count tied to the columns means a page is still a full screen either way.
-  const cols = expr === "sad|mad" ? COLS / 2 : COLS;
+  const cols = pair ? COLS / 2 : COLS;
   const count = cols * ROWS;
 
   // Filtering by shape means scanning forward past the seeds that do not match,
@@ -168,9 +212,9 @@ export function App() {
             expression
             <select
               value={expr}
-              onChange={(e) => setExpr(e.target.value as ExprMode)}
+              onChange={(e) => setExpr(e.target.value as keyof typeof EXPRESSIONS)}
             >
-              {EXPRESSIONS.map((e) => (
+              {Object.keys(EXPRESSIONS).map((e) => (
                 <option key={e}>{e}</option>
               ))}
             </select>
@@ -209,7 +253,7 @@ export function App() {
         style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
       >
         {seeds.map((seed) =>
-          expr === "sad|mad" ? (
+          pair ? (
             // Both halves are the same seed, so every difference on screen is the
             // expression and nothing else. Rendered through the string API even
             // when animating: this mode is for judging the two *poses* against
@@ -221,9 +265,9 @@ export function App() {
               title={seed}
               onClick={() => setFocus(seed)}
             >
-              {PAIR.map((e) => (
+              {pair.map((e, i) => (
                 <span
-                  key={e}
+                  key={i}
                   dangerouslySetInnerHTML={{
                     __html: blobatar(seed, { ...opts, expression: e }),
                   }}
@@ -262,11 +306,11 @@ export function App() {
               look at sits perfectly still — and the whole point of opening it
               is to watch the motion at a size where it is legible.
             */}
-            {expr === "sad|mad" ? (
+            {pair ? (
               <div className="big pair">
-                {PAIR.map((e) => (
+                {pair.map((e, i) => (
                   <span
-                    key={e}
+                    key={i}
                     dangerouslySetInnerHTML={{
                       __html: blobatar(focus, { ...opts, expression: e }),
                     }}

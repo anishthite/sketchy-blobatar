@@ -193,12 +193,56 @@ export const mixHex = (a: string, b: string, t: number) =>
   toHex(mix(fromHex(a), fromHex(b), t));
 
 /**
- * Where a hot pose is heading. Red, because every reference for anger is — and
- * only half of the way there in lightness, so the tone set survives the trip.
+ * Where a tinting pose is heading.
+ *
+ * Four numbers rather than an authored colour, because the endpoint has to be
+ * derived per seed — see `tinted` below. A `Tint` says *which way*, and the
+ * blobatar's own palette says where that lands.
+ *
+ * This was three constants and a red until the roster wanted more than anger.
+ * Generalising it is what makes a second tinting pose cost its numbers rather
+ * than a second copy of the contrast walk — and the walk is the part that is
+ * easy to get subtly wrong, so having exactly one of it is the point.
  */
-const HOT_HUE = 27;
-const HOT_L = 0.58;
-const HOT_PULL = 0.6;
+export interface Tint {
+  /** Hue the body arrives at, in degrees. Reached outright, not approached. */
+  h: number;
+  /** Lightness it heads toward. */
+  l: number;
+  /** How far of the way to `l` the body actually travels, 0–1. */
+  pull: number;
+  /** Chroma floor. The body never desaturates on the way. */
+  c: number;
+}
+
+/**
+ * Red, because every reference for anger is — and only 60% of the way there in
+ * lightness, so the tone set survives the trip.
+ */
+export const HOT: Tint = { h: 27, l: 0.58, pull: 0.6, c: 0.18 };
+
+/**
+ * The rest of the targets, kept here beside `HOT` rather than in `expression.ts`
+ * so that the module that owns the guarantee owns the full set of endpoints it
+ * has to hold for. `test/color.test.ts` iterates this list; a target added over
+ * there and not here would be a tint nothing verifies.
+ *
+ * `pull` is the dial that keeps them apart as much as `h` is. `BLUSH` travels
+ * only 0.4 of the way and lands pale — a shy blobatar that goes as red as an
+ * angry one is an angry one.
+ */
+export const ROSE: Tint = { h: 358, l: 0.72, pull: 0.55, c: 0.16 };
+export const BLUSH: Tint = { h: 12, l: 0.84, pull: 0.4, c: 0.1 };
+export const BILE: Tint = { h: 142, l: 0.66, pull: 0.6, c: 0.13 };
+
+/** Every target the suite has to hold the contrast guarantee across. */
+export const TINTS: [string, Tint][] = [
+  ["hot", HOT],
+  ["rose", ROSE],
+  ["blush", BLUSH],
+  ["bile", BILE],
+];
+
 /**
  * A hair over the 4.5:1 the suite asserts.
  *
@@ -208,23 +252,23 @@ const HOT_PULL = 0.6;
  * the third decimal, so the floor is cleared by more than that rather than sat
  * exactly on.
  */
-const HOT_FLOOR = 4.55;
+const TINT_FLOOR = 4.55;
 
 /**
- * The palette a hot pose tints toward, given the one it is tinting from.
+ * The palette a tinting pose heads toward, given the one it is tinting from.
  *
- * Derived per seed rather than being a single authored red, and the reason is
+ * Derived per seed rather than being a single authored colour, and the reason is
  * polarity: `blob` flips its eye between near-black and near-white depending on
  * the body's lightness, and no fixed red clears 4.5:1 against both.
  *
- * So the hot body meets a mid red **halfway** rather than landing on it. Holding
- * the body's own lightness was the first attempt and it is too quiet — a pastel
- * goes pink rather than angry, because at L 0.86 there is no red to be had.
- * Travelling the whole way is the opposite failure: every blobatar in the roster
- * converges on one red and the tone set, which is most of what makes a grid look
- * like a crowd, disappears at the exact moment the grid is loudest. Half keeps a
- * pale blobatar recognisably pale and an ink one recognisably dark while giving
- * both somewhere to go.
+ * So the tinted body meets its target **partway** rather than landing on it.
+ * Holding the body's own lightness was the first attempt and it is too quiet — a
+ * pastel goes pink rather than angry, because at L 0.86 there is no red to be
+ * had. Travelling the whole way is the opposite failure: every blobatar in the
+ * roster converges on one red and the tone set, which is most of what makes a
+ * grid look like a crowd, disappears at the exact moment the grid is loudest.
+ * `pull` keeps a pale blobatar recognisably pale and an ink one recognisably
+ * dark while giving both somewhere to go.
  *
  * The eye endpoint is then pushed until **every point along the mix** clears the
  * floor, not merely both ends. A straight line in OKLab between two passing
@@ -232,27 +276,32 @@ const HOT_FLOOR = 4.55;
  * the two lightnesses can close on each other in the middle of a transition that
  * is legible at both stops. This walks the mix and fixes the worst point.
  *
- * Tree-shaken out of any bundle that imports no hot expression — it is reached
- * only through `hotVars` on the expression value, the same indirection that
- * keeps `expression.ts` itself out of the core.
+ * Tree-shaken out of any bundle that imports no tinting expression — it is
+ * reached only through `tint` on the expression value, the same indirection that
+ * keeps `expression.ts` itself out of the core. One walk serves every target, so
+ * a bundle with three tinting poses in it carries this once.
  */
-export function hot(head: string, eye: string): [string, string] {
+export function tinted(
+  head: string,
+  eye: string,
+  t: Tint,
+): [string, string] {
   const base = fromHex(head);
   const baseEye = fromHex(eye);
 
   // Chroma is floored rather than replaced: a body that is already vivid should
-  // not *lose* saturation on the way to angry, and the pale neutral swatch has
-  // almost none to keep.
+  // not *lose* saturation on the way, and the pale neutral swatch has almost
+  // none to keep.
   let hotHead: Oklch = {
-    l: base.l + (HOT_L - base.l) * HOT_PULL,
-    c: Math.max(base.c, 0.18),
-    h: HOT_HUE,
+    l: base.l + (t.l - base.l) * t.pull,
+    c: Math.max(base.c, t.c),
+    h: t.h,
   };
   // The body still has to be visible on a dark page at full heat, which is the
   // same floor the ramp enforces and for the same reason.
   hotHead = ensureContrast(hotHead, DARK_SURFACE, SURFACE_FLOOR);
 
-  let hotEye = ensureContrast(baseEye, hotHead, HOT_FLOOR);
+  let hotEye = ensureContrast(baseEye, hotHead, TINT_FLOOR);
 
   // Walked rather than assumed, in the exact terms that ship — the hexes, mixed
   // the way `mixHex` mixes them — because "both ends pass" does not imply "every
@@ -277,7 +326,7 @@ export function hot(head: string, eye: string): [string, string] {
         ),
       );
     }
-    if (worst >= HOT_FLOOR) return [headHex, eyeHex];
+    if (worst >= TINT_FLOOR) return [headHex, eyeHex];
     const l = Math.min(1, Math.max(0, hotEye.l + dir * 0.02));
     if (l === hotEye.l) return [headHex, eyeHex];
     hotEye = { ...hotEye, l };

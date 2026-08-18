@@ -243,7 +243,7 @@ export interface Motion {
  * The palette is handed to the factory because a tinting expression needs it:
  * the hot pair it mixes toward is derived from the colors the blobatar is actually
  * wearing, overrides included. It arrives as an argument rather than being
- * looked up so that `src/color.ts`'s `hot()` stays reachable only from an
+ * looked up so that `src/color.ts`'s `tinted()` stays reachable only from an
  * expression value — the same indirection that keeps `animate.ts` out of static
  * bundles.
  */
