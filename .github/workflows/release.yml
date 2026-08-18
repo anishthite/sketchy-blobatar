@@ -28,6 +28,14 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      # setup-node ships npm 10 with Node 22, and OIDC trusted publishing —
+      # which is how this package authenticates, there is no NPM_TOKEN — landed
+      # in npm 11.5.1. On the older client `npm publish` does not even attempt
+      # the token exchange; it fails with ENEEDAUTH as if no credentials were
+      # configured at all, which is a misleading way to learn this.
+      - name: npm new enough to exchange the OIDC token
+        run: npm install -g npm@latest
+
       - run: bun install --frozen-lockfile
 
       - name: Tests
@@ -53,6 +61,12 @@ jobs:
         if: github.event_name == 'push'
 
       # npm, not bun: `bun publish` does not yet emit provenance attestations.
+      #
+      # No NODE_AUTH_TOKEN. The package is published through npm's trusted
+      # publisher for this repo and this workflow file, so the credential is the
+      # OIDC token `id-token: write` above mints — there is no long-lived npm
+      # token in this repo to leak or rotate. Renaming this file breaks the
+      # trust: the publisher is registered against `release.yml` by name.
       - name: Publish
         run: npm publish --workspace sketchy-blobatar --provenance --access public
         env:

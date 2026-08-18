@@ -84,6 +84,23 @@ const POSES = [
 type Pose = (typeof POSES)[number];
 
 /**
+ * How many of the roster the panel shows without being asked.
+ *
+ * Four, because the tile grid is four across and a fifth tile would sit alone on
+ * a second row — which reads as an accident rather than as a row. The rest live
+ * behind the `+N more` row, which counts them itself so the roster can grow
+ * without a number going stale here. The split is not arbitrary: these four are the original
+ * roster and they span the axis the whole feature turns on (eyes up, eyes flat,
+ * eyes small, and the one that spends colour). Someone who opens this panel and
+ * reads no further has still seen what an expression *is*.
+ *
+ * The order is the roster's, not a ranking — `POSES` is the single list, and the
+ * panel takes a prefix of it rather than keeping a second one that can drift.
+ */
+const SHOWN = 4;
+const MORE = POSES.slice(SHOWN);
+
+/**
  * How long a reaction is held before it releases back to the picked pose.
  *
  * Measured from the click, so it *contains* the morph in rather than following
@@ -185,6 +202,14 @@ export function Hero() {
   const [burst, setBurst] = useState<Expression | null>(null);
   const release = useRef<ReturnType<typeof setTimeout>>(null);
   const wide = useWide();
+
+  /**
+   * The nested panel is controlled rather than left to Radix, for one reason:
+   * picking a pose in it has to close it. An uncontrolled popover would stay
+   * open over the face it just changed, which is the one thing the panel is in
+   * the way of.
+   */
+  const [more, setMore] = useState(false);
 
   /**
    * A few names render as themselves instead of as a hash — see `@/eggs`.
@@ -550,33 +575,58 @@ export function Hero() {
                         onClick={() => pick(p)}
                         aria-pressed={pose.name === p.name}
                         className={cn(
-                          "flex flex-col items-center gap-1 rounded-xl py-2 transition-colors duration-150",
-                          pose.name === p.name ? "bg-line/70" : "hover:bg-line/30",
+                          "flex items-center justify-center gap-1.5 rounded-xl py-1.5",
+                          "font-mono text-[0.65rem] lowercase transition-colors duration-150",
+                          extra
+                            ? "bg-line/70 text-ink"
+                            : "text-muted hover:bg-line/30 hover:text-ink",
                         )}
                       >
-                        {/*
-                          Static `<img>`s, deliberately. A pose renders without
-                          `animate` — that is the library's own claim — and four
-                          live SVG trees inside a panel would be four things
-                          competing with the one that is supposed to be moving.
-                        */}
-                        <Blobatar
-                          name={seed || " "}
-                          {...opts}
-                          expression={p.value}
-                          alt=""
-                          className="size-10"
-                        />
-                        <span
-                          className={cn(
-                            "font-mono text-[0.65rem] lowercase transition-colors",
-                            pose.name === p.name ? "text-ink" : "text-muted",
-                          )}
+                        {extra ? `${pose.name} · ${MORE.length} more` : `+${MORE.length} more`}
+                        <ChevronIcon down={!wide} />
+                      </PopoverTrigger>
+
+                      {/*
+                        Anchored to the row it opens from, and sided the same way
+                        the options panel is — beside it on a wide screen, under
+                        it on a narrow one. Radix flips either when the viewport
+                        says otherwise, which is what stops a second panel from
+                        walking off the right edge on a 1024px window.
+                      */}
+                      <PopoverContent
+                        side={wide ? "right" : "bottom"}
+                        align={wide ? "start" : "center"}
+                        sideOffset={12}
+                        collisionPadding={16}
+                        className="max-h-[var(--radix-popover-content-available-height)] w-72 overflow-y-auto"
+                      >
+                        <div
+                          className="grid grid-cols-4 gap-1"
+                          role="group"
+                          aria-label="All expressions"
                         >
-                          {p.name}
-                        </span>
-                      </button>
-                    ))}
+                          {/*
+                            The whole roster, not just the ones behind the row.
+                            A picker that
+                            hides what you already chose makes you close it to
+                            find out whether you chose it.
+                          */}
+                          {POSES.map((p) => (
+                            <PoseTile
+                              key={p.name}
+                              pose={p}
+                              seed={seed}
+                              opts={opts}
+                              selected={pose.name === p.name}
+                              onClick={() => {
+                                pick(p);
+                                setMore(false);
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </Field>
 
@@ -745,6 +795,58 @@ function ShapeTile({
   );
 }
 
+/**
+ * One pose, shown rather than named — the same argument `ShapeTile` makes. It
+ * became a component when the roster outgrew a single row: the tile is rendered
+ * from two places now, and two copies of it would be two places for the selected
+ * wash to drift apart.
+ *
+ * Static `<img>`s, deliberately. A pose renders without `animate` — that is the
+ * library's own claim — and ten live SVG trees inside a panel would be ten
+ * things competing with the one that is supposed to be moving.
+ */
+function PoseTile({
+  pose,
+  seed,
+  opts,
+  selected,
+  onClick,
+}: {
+  pose: Pose;
+  seed: string;
+  opts: BlobatarOptions;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={cn(
+        "flex flex-col items-center gap-1 rounded-xl py-2 transition-colors duration-150",
+        selected ? "bg-line/70" : "hover:bg-line/30",
+      )}
+    >
+      <Blobatar
+        name={seed || " "}
+        {...opts}
+        expression={pose.value}
+        alt=""
+        className="size-10"
+      />
+      <span
+        className={cn(
+          "font-mono text-[0.65rem] lowercase transition-colors",
+          selected ? "text-ink" : "text-muted",
+        )}
+      >
+        {pose.name}
+      </span>
+    </button>
+  );
+}
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
@@ -815,6 +917,28 @@ function SlidersIcon() {
       <path d="M4 8h8M17 8h3M4 16h3M12 16h8" />
       <circle cx="14.5" cy="8" r="2.2" />
       <circle cx="9.5" cy="16" r="2.2" />
+    </svg>
+  );
+}
+
+/**
+ * Points the way the panel opens, which is not a fixed direction — beside the
+ * row on a wide screen, under it on a narrow one. Same 1.7px stroke as the other
+ * icons on the page, at the size the row's 0.65rem type can carry.
+ */
+function ChevronIcon({ down }: { down: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={cn("size-3 transition-transform duration-150", down && "rotate-90")}
+    >
+      <path d="M9 6l6 6-6 6" />
     </svg>
   );
 }

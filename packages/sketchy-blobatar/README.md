@@ -202,9 +202,13 @@ import { happy, idle } from "sketchy-blobatar/expression";
 <Blobatar name={user.email} animate="always" expression={happy} size={64} />;
 ```
 
-The first expression you import costs about 340 bytes (the shared serializer,
-paid once) and each one after it about 36. A consumer who imports none carries
-no pose code at all — which is why `expression` is a value rather than a string.
+The first expression you import costs about 340 bytes (the shared serializer and
+bake, paid once) and each untinted one after it about 35. The four tinted poses —
+`mad`, `love`, `shy`, `sick` — are the exception: the first of them pulls in the
+OKLab colour path for about 720 bytes, and each tinted one after that costs about
+60, because they share one walk with four targets. The whole roster is about 1.5
+KB over `blob` alone; a consumer who imports none carries no pose code at all,
+which is why `expression` is a value rather than a string.
 
 **A state, not an event.** Nothing returns to `idle` on its own and there are no
 timers. If you want a burst, schedule the clear yourself:

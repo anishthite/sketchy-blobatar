@@ -119,6 +119,17 @@ for (const b of BROWSERS)
         ` was extended for was visible in exactly one engine.`,
     );
 
+/**
+ * Every pose, not a sample of them.
+ *
+ * Check A compares a baked pose against the same pose expressed as CSS, and the
+ * channels most able to disagree are the per-eye differentials — `bakePose` adds
+ * them to eye index 1 while `motion.css` selects the right eye through
+ * `--mo-sel`, and nothing but this gate makes those two agree about which eye is
+ * the second one. `wink` and `unsure` lean on that channel harder than anything
+ * in the first roster, so leaving them out would be leaving out the cases the
+ * check is for. Same argument for check E and the three tinting poses.
+ */
 const POSES: [string, Expression | undefined][] = [
   ["idle", undefined],
   ["happy", happy],

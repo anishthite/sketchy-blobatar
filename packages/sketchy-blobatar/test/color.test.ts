@@ -4,7 +4,8 @@ import {
   contrast,
   ensureContrast,
   fromHex,
-  hot,
+  TINTS,
+  tinted,
   mixHex,
   palette,
   ramp,
@@ -112,7 +113,7 @@ describe("the palette", () => {
   });
 });
 
-describe("the hot palette", () => {
+describe("the tinted palettes", () => {
   /**
    * A tint that lands on top of a contrast-checked palette is not itself
    * contrast-checked, and the guarantee is either kept or dropped — quietly
@@ -125,26 +126,34 @@ describe("the hot palette", () => {
    * nobody would ever look at with a contrast checker.
    *
    * Asserted on the serialized hexes, since those are what ship and what a
-   * browser reads. `hot()` holds a slightly wider internal floor so that
+   * browser reads. `tinted()` holds a slightly wider internal floor so that
    * rounding to a byte per channel cannot land it under the real one.
+   *
+   * **Every target, not just the red one.** `hot()` became `tinted(…, Tint)` so
+   * that a second tinting pose costs its numbers rather than a second copy of
+   * the walk — and the whole value of having one walk is lost if only one of the
+   * endpoints it is asked for is ever verified. Adding a `Tint` to `TINTS` is
+   * what enrolls it here.
    */
   const HEATS = Array.from({ length: 11 }, (_, i) => i / 10);
   const TONES = [0.1, 0.3, 0.5, 0.7, 0.88, 0.97];
   const ground = { l: 0.145, c: 0, h: 0 }; // ≈ #0a0a0b
 
-  test("the eye clears the body at 4.5:1 at every heat, hue and tone", () => {
-    for (const h of HUES) {
-      for (const tone of TONES) {
-        const p = palette(h, true, tone);
-        const [hotHead, hotEye] = hot(p.head!, p.eye!);
-        for (const t of HEATS) {
-          expect(
-            contrast(
-              fromHex(mixHex(p.eye!, hotEye, t)),
-              fromHex(mixHex(p.head!, hotHead, t)),
-            ),
-            `hue ${h} tone ${tone} heat ${t}`,
-          ).toBeGreaterThanOrEqual(4.5);
+  test("the eye clears the body at 4.5:1 at every heat, hue, tone and target", () => {
+    for (const [name, tint] of TINTS) {
+      for (const h of HUES) {
+        for (const tone of TONES) {
+          const p = palette(h, true, tone);
+          const [hotHead, hotEye] = tinted(p.head!, p.eye!, tint);
+          for (const t of HEATS) {
+            expect(
+              contrast(
+                fromHex(mixHex(p.eye!, hotEye, t)),
+                fromHex(mixHex(p.head!, hotHead, t)),
+              ),
+              `${name} hue ${h} tone ${tone} heat ${t}`,
+            ).toBeGreaterThanOrEqual(4.5);
+          }
         }
       }
     }
@@ -152,16 +161,18 @@ describe("the hot palette", () => {
 
   test("a tinted body stays visible on a dark host surface", () => {
     // `blob` ships with its backdrop off, so the same floor the ramp enforces
-    // applies to everything the tint can turn the body into.
-    for (const h of HUES) {
-      for (const tone of TONES) {
-        const p = palette(h, true, tone);
-        const [hotHead] = hot(p.head!, p.eye!);
-        for (const t of HEATS) {
-          expect(
-            contrast(fromHex(mixHex(p.head!, hotHead, t)), ground),
-            `hue ${h} tone ${tone} heat ${t}`,
-          ).toBeGreaterThanOrEqual(1.5);
+    // applies to everything any tint can turn the body into.
+    for (const [name, tint] of TINTS) {
+      for (const h of HUES) {
+        for (const tone of TONES) {
+          const p = palette(h, true, tone);
+          const [hotHead] = tinted(p.head!, p.eye!, tint);
+          for (const t of HEATS) {
+            expect(
+              contrast(fromHex(mixHex(p.head!, hotHead, t)), ground),
+              `${name} hue ${h} tone ${tone} heat ${t}`,
+            ).toBeGreaterThanOrEqual(1.5);
+          }
         }
       }
     }
@@ -171,38 +182,47 @@ describe("the hot palette", () => {
     // The morph runs *through* here on the way out, so a tint that does not
     // resolve to exactly the resting colour would leave the blobatar a shade off
     // its own identity every time it stopped being angry.
-    for (const h of HUES) {
-      const p = palette(h);
-      const [hotHead, hotEye] = hot(p.head!, p.eye!);
-      expect(mixHex(p.head!, hotHead, 0)).toBe(p.head!);
-      expect(mixHex(p.eye!, hotEye, 0)).toBe(p.eye!);
+    for (const [name, tint] of TINTS) {
+      for (const h of HUES) {
+        const p = palette(h);
+        const [hotHead, hotEye] = tinted(p.head!, p.eye!, tint);
+        expect(mixHex(p.head!, hotHead, 0), name).toBe(p.head!);
+        expect(mixHex(p.eye!, hotEye, 0), name).toBe(p.eye!);
+      }
     }
   });
 
-  test("the tone set survives the trip rather than collapsing onto one red", () => {
-    // Half the point of deriving the hot pair per seed. If every angry blobatar
+  test("the tone set survives the trip rather than collapsing onto one colour", () => {
+    // Half the point of deriving the pair per seed. If every angry blobatar
     // converged on the same colour, the grid would stop reading as a crowd at
     // precisely the moment it is loudest.
-    const heads = TONES.map((t) => {
-      const p = palette(200, true, t);
-      return fromHex(hot(p.head!, p.eye!)[0]).l;
-    });
-    expect(new Set(heads.map((l) => l.toFixed(3))).size).toBe(TONES.length);
-    expect(Math.max(...heads) - Math.min(...heads)).toBeGreaterThan(0.2);
+    for (const [name, tint] of TINTS) {
+      const heads = TONES.map((t) => {
+        const p = palette(200, true, t);
+        return fromHex(tinted(p.head!, p.eye!, tint)[0]).l;
+      });
+      expect(new Set(heads.map((l) => l.toFixed(3))).size, name).toBe(TONES.length);
+      // `BLUSH` pulls only 0.4 of the way, so it keeps *more* of the tone set
+      // than the loud targets do — the floor is what every target has to clear,
+      // not what each one happens to score.
+      expect(Math.max(...heads) - Math.min(...heads), name).toBeGreaterThan(0.2);
+    }
   });
 
-  test("a hot body actually reads as red", () => {
+  test("a tinted body actually arrives at its target hue", () => {
     // Every guarantee above is satisfiable by not moving, or by desaturating to
     // grey — `ensureContrast` and the gamut mapper both reach for lightness and
     // chroma, and either could quietly turn "angry" into "beige". So: the hue
-    // lands in the reds, and there is chroma left for it to land in.
-    for (const tone of TONES) {
-      for (const h of HUES) {
-        const p = palette(h, true, tone);
-        const c = fromHex(hot(p.head!, p.eye!)[0]);
-        const off = Math.abs(((c.h - 27 + 540) % 360) - 180);
-        expect(off, `hue ${h} tone ${tone}`).toBeLessThan(6);
-        expect(c.c, `hue ${h} tone ${tone}`).toBeGreaterThan(0.06);
+    // lands where the target said, and there is chroma left for it to land in.
+    for (const [name, tint] of TINTS) {
+      for (const tone of TONES) {
+        for (const h of HUES) {
+          const p = palette(h, true, tone);
+          const c = fromHex(tinted(p.head!, p.eye!, tint)[0]);
+          const off = Math.abs(((c.h - tint.h + 540) % 360) - 180);
+          expect(off, `${name} hue ${h} tone ${tone}`).toBeLessThan(6);
+          expect(c.c, `${name} hue ${h} tone ${tone}`).toBeGreaterThan(0.06);
+        }
       }
     }
   });

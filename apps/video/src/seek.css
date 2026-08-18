@@ -60,9 +60,58 @@
   ) !important;
 }
 
-/* Blink and wrap, in the order motion.css declares them. */
+/*
+ * Blink and wrap, in the order motion.css declares them.
+ *
+ * The blink reads `--vid-blink-t` and falls back to the film clock, so a
+ * composition that does not set it — the launch film — behaves exactly as
+ * before. `Expressions` sets it to a clock that stops during a pose change, for
+ * the reason `blinkTime` in `reel.ts` gives: a blink flattens both eyes, and the
+ * one place that is not life but a glitch is the middle of a morph.
+ *
+ * The wrap stays on the film clock. It follows the glance, which has no reason
+ * to hold still while the face changes, and freezing it would park the eyes
+ * mid-saccade — the same failure one channel over.
+ */
 .mo-eye > * {
   animation-delay:
-    calc(var(--mo-blink-phase, 0ms) * var(--mo-rate, 1) - var(--vid-t, 0ms)),
+    calc(
+      var(--mo-blink-phase, 0ms) * var(--mo-rate, 1) -
+        var(--vid-blink-t, var(--vid-t, 0ms))
+    ),
     calc(var(--mo-saccade-phase, 0ms) * var(--mo-rate, 1) - var(--vid-t, 0ms)) !important;
+}
+
+/*
+ * Transitions off, for the same reason the animations above are paused.
+ *
+ * A pause plus a negative delay seeks a `@keyframes` loop because the loop has
+ * its own local time. A *transition* has none: it starts when a value changes,
+ * measured against the wall clock, and there is nothing to offset it by. Under
+ * a renderer that freezes time it therefore never advances — and it does not
+ * fail visibly, it fails *intermittently*, which is worse.
+ *
+ * It also only fails in the video, never in a still. `remotion still` opens a
+ * fresh page per frame, where a first computed value is not a change and no
+ * transition runs at all; `remotion render` reuses one page and steps React
+ * through it, so every frame's pose is a real change that queues a real 400ms
+ * transition into a clock that is frozen. Measured on `Expressions`: the face
+ * held the previous pose for the whole morph and then jumped, while the caption
+ * — plain React, no CSS in the middle — changed on the right frame. The two
+ * disagreeing by half a second is what reads as a blink.
+ *
+ * Killing them costs the film nothing, because the film does not use them. The
+ * morph is re-derived per frame on the pose channels in `reel.ts`, precisely so
+ * it lands somewhere seekable; `motion.css`'s own morph is the thing being
+ * replaced, not something to preserve. Same list `prefers-reduced-motion`
+ * disables there, which is the same judgement for a different reason.
+ */
+.mo-root,
+.mo-breathe,
+.mo-bob,
+.mo-eyes,
+.mo-eye,
+.mo-eye > *,
+.mo-bob > g:not(.mo-eyes) {
+  transition: none !important;
 }

@@ -6,6 +6,7 @@ import {
   excited,
   happy,
   idle,
+  love,
   mad,
   poseVars,
   sad,

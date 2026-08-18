@@ -49,7 +49,7 @@ spec ruled it out on two grounds: it is the most legible cue available, and it
 would void the contrast guarantee. The first is why `mad` now uses it; the
 second turned out to be a reason to *extend* the guarantee rather than to decline
 the feature, and `test/color.test.ts` now verifies the tinted pairs at 1°
-resolution across every hue, tone and heat. See §11.
+resolution across every hue, tone, heat **and target**. See §11 and §3.2.
 
 **It is `blob` only.** `character` accepts the option and ignores it — asserted,
 so a half-applied pose can never ship quietly. `character` is where expressions
@@ -196,6 +196,139 @@ and `tilt` are mirrored per side; the `*2` channels apply to the right eye only.
 | `excited` | 1.18 | 1.14 | 6 | −1.8 | 1.1 | 0.10 | 0.12 | −6 | 1 | 0 | 0 | −1.8 |
 | `suspicious` | 1.32 | 0.56 | −16 | 0.6 | 0.7 | −0.30 | 0.12 | 13 | 1 | 0 | 0 | 0.4 |
 | `bashful` | 0.88 | 0.72 | 18 | 2.2 | −0.6 | −0.16 | 0.10 | −9 | 1 | 0 | 0 | 1.3 |
+
+### 3.1 The second roster
+
+Added later and additive by construction — every pose is data on channels that
+already existed, so `motion.css` learned nothing new:
+
+|             | esx  | esy  | tilt | edy   | edx  | esx2  | esy2  | tilt2 | lock | heat | shake | bdy  |
+| ----------- | ---- | ---- | ---- | ----- | ---- | ----- | ----- | ----- | ---- | ---- | ----- | ---- |
+| `surprised` | 1.34 | 1.2  | −6   | −1.05 | 0.5  | 0.05  | 0.07  | 3     | 1    | 0    | 0     | −1.4 |
+| `wink`      | 1.32 | 0.76 | 5    | −0.6  | 0.8  | 0.26  | −0.56 | −11   | 1    | 0    | 0     | −1.1 |
+| `sleepy`    | 1.14 | 0.22 | 0    | 2.4   | 0.3  | −0.04 | 0.03  | 4     | 1    | 0    | 0     | 1.2  |
+| `smug`      | 1.3  | 0.42 | 18   | −0.5  | 0.5  | 0.06  | −0.06 | −36   | 1    | 0    | 0     | −1   |
+| `unsure`    | 0.95 | 1.02 | 4    | −0.2  | 0.3  | 0.24  | −0.44 | −18   | 1    | 0    | 0     | 0    |
+| `scared`    | 0.78 | 0.96 | −12  | −1.5  | −0.8 | −0.04 | 0.05  | 4     | 1    | 0    | 0.35  | −0.6 |
+
+Four things about that table are the design rather than the tuning:
+
+- **`surprised` is the only pose that goes _up_ on `esy`.** Everything in the
+  first roster lives between 0.26 and 0.56, so a pose at 1.26 cannot be confused
+  with any of them at any size. It is also the first pose in this feature where
+  **containment binds rather than fusion** — growing the pair and lifting it push
+  the eye corners toward the outline, which is why its `esy` came back down from
+  1.34 to 1.20 across two tuning passes. It is the only pose in the library whose
+  amplitude is capped by the frame rather than by legibility.
+- **`wink` and `unsure` are built _on_ the differentials**, not seasoned with
+  them. `happy` sets `esy2` to 0.05 explicitly to stay short of a wink; `wink` is
+  that channel eleven times over. This is the shape no amount of amplitude on a
+  symmetric pose can imitate, and the payoff for §5.1 existing at all.
+- **`sleepy`'s nearest neighbour is `mad`, not `sad`.** Both are landscape bars,
+  and at 44px the bar is most of what reads. It survives on `tilt` (0 against
+  −33), `edy` (+2.4 against +0.4), and the tint and tremor it does not carry —
+  three channels, per the §2 rule. Its `tilt: 0` under `lock: 1` is not a no-op:
+  a level pair is what reads as lidded, and a seed's 12° lean turns that into
+  suspicion.
+- **`scared` spends `shake` without `heat`**, which is the point of listing it
+  next to `mad`: a tremor is arousal, not anger, and a consumer who wants a
+  frightened blobatar should not pay ~700 B of colour code for it. At 0.35
+  against `mad`'s 0.55 it is a shiver rather than a rage.
+
+`smug` is the one that needed a second pass. It is `happy`'s parallel-tilt trick
+(`tilt2 = −2 × tilt`) turned up: at 10° the lean did not survive 40px and the
+pose read as a narrower `happy`, so it sits at 18°. A symmetric tilt is a brow
+and reads as an emotion; a parallel tilt is a head cocked and reads as an
+attitude, which is the whole distance between this pose and `mad`.
+
+Measured headroom for the second roster, same 4000 seeds:
+
+| guard                                 | surprised | wink | sleepy | smug | unsure | scared | limit  |
+| ------------------------------------- | --------- | ---- | ------ | ---- | ------ | ------ | ------ |
+| worst fusion clearance, viewBox units | 4.27      | 5.16 | 6.10   | 4.39 | 4.79   | 3.46   | > 2    |
+| worst eye-corner reach, × body radius | 1.05      | 0.89 | 0.73   | 0.81 | 0.90   | 0.88   | < 1.12 |
+
+`scared` is the tight one on clearance for the obvious reason — convergence
+spends clearance directly. It narrows the eyes on the way in and buys most of it
+back.
+
+### 3.2 The tinting roster, and the generalization that allowed it
+
+`mad` was the only pose that spent colour for two releases. The reason was never
+that anger is special — it was that `hot()` was *a red* with the walk that keeps
+the contrast guarantee (§11) baked into it. Splitting those apart is the whole
+enabling change: `hot(head, eye)` became `tinted(head, eye, Tint)`, where a
+`Tint` is four numbers — a hue to arrive at, a lightness to head toward, how far
+of the way to travel (`pull`), and a chroma floor.
+
+|         | esx  | esy  | tilt | edy  | edx   | esx2  | esy2  | tilt2 | lock | heat | shake | bdy  |
+| ------- | ---- | ---- | ---- | ---- | ----- | ----- | ----- | ----- | ---- | ---- | ----- | ---- |
+| `love`  | 0.86 | 1.28 | −14  | −0.5 | −0.35 | 0.05  | 0.06  | 6     | 1    | 0.6  | 0     | −1.6 |
+| `shy`   | 0.62 | 0.5  | 10   | 1.4  | −0.2  | −0.05 | −0.04 | −8    | 1    | 0.55 | 0     | 0.9  |
+| `sick`  | 1.25 | 0.34 | 20   | 1.8  | 0.8   | 0.05  | −0.05 | −6    | 1    | 0.6  | 0.18  | 1.4  |
+
+| target  | h   | l    | pull | c    | worn by |
+| ------- | --- | ---- | ---- | ---- | ------- |
+| `HOT`   | 27  | 0.58 | 0.6  | 0.18 | `mad`   |
+| `ROSE`  | 358 | 0.72 | 0.55 | 0.16 | `love`  |
+| `BLUSH` | 12  | 0.84 | 0.4  | 0.1  | `shy`   |
+| `BILE`  | 142 | 0.66 | 0.6  | 0.13 | `sick`  |
+
+The targets live in `color.ts` beside `HOT` rather than in `expression.ts`, so
+the module that owns the guarantee owns every endpoint it has to hold for. They
+are exported as `TINTS`, and `test/color.test.ts` iterates that list — a target
+added to the roster and not to `TINTS` would be a tint nothing verifies.
+
+**`pull` separates the targets as much as `h` does.** `BLUSH` travels only 0.4
+of the way and lands pale on purpose: a shy blobatar that goes as red as an angry
+one is an angry one.
+
+#### The rule for spending colour
+
+Colour is the loudest channel in the vocabulary and the only one that does not
+have to fight two capsule eyes for legibility, which makes it exactly the channel
+most likely to be spent instead of doing the work. So the §2 rule applies to it
+unchanged, in this form: **a tint is never the only thing separating two poses.**
+Every pose here would still be a different pose in greyscale.
+
+That is not a principle stated after the fact — both of the first drafts broke
+it, and rendering the roster in a contact sheet is what caught them:
+
+- **`love` was wide and tall**, which is `surprised`. Same face, with the tint
+  carrying the entire meaning. It is now narrow and drawn together (0.86, −0.35)
+  against `surprised`'s wide and spread (1.34, +0.5): startled *by* you against
+  looking *at* you.
+- **`shy` was a pink `sick`** — both flat-ish eyes low over a sunk body,
+  separated by hue alone. `shy` is now small and converged, `sick` is wide bars
+  slumped into a `/ \`.
+
+The check that found both is worth keeping: score every pair of poses by weighted
+channel distance with `heat` excluded, and look at the closest ones. The tightest
+pair in the roster is now `sick`/`sleepy`, which disagree on tilt (20 against 0),
+tremor and tint.
+
+`sick`'s tilt being *positive* is the §2.2 sign trap, not a typo: on a landscape
+bar +20 raises the inner ends into a worried `/ \`, where `mad`'s −33 drops them
+into an angry `\ /`.
+
+#### What a tinting pose costs
+
+Measured through the same synthetic consumers `scripts/size.ts` uses:
+
+| import         | gz     | delta |
+| -------------- | ------ | ----- |
+| `blob` only    | 3660 B | —     |
+| `+ happy`      | 3989 B | +329  |
+| `+ mad`        | 4715 B | +726  |
+| `+ love`       | 4782 B | +67   |
+| `+ shy`        | 4845 B | +63   |
+| `+ sick`       | 4898 B | +53   |
+| whole roster   | 5155 B |       |
+
+**The second tinting pose costs 67 B, not 726.** That is the generalization
+paying for itself: one walk, four targets. The first tinting pose in a bundle
+still carries the whole colour path — `tinted`, `mixHex`, `fromHex` and the OKLab
+matrices — and a consumer who imports only cool poses still pays none of it.
 
 `happy`'s `tilt2` is exactly `−2 × tilt`, which is not a coincidence and not a
 third asymmetric flourish. The mirroring makes the left eye `−tilt` and the
@@ -552,10 +685,11 @@ palette is not itself contrast-checked, and nothing would have said so.
 
 ### What ships
 
-`heat` is a 0–1 amount on the pose. `mad` sits at 0.62.
+`heat` is a 0–1 amount on the pose. `mad` sits at 0.62, and three more poses
+spend it — see §3.2 for the roster and the four targets.
 
-The hot pair is derived from the blobatar's own resolved palette rather than
-authored once. The body keeps its own hue-neutral character by meeting a mid red
+The tint's endpoint is derived from the blobatar's own resolved palette rather
+than authored once. The body keeps its own hue-neutral character by meeting a mid red
 **halfway** in lightness: holding its lightness outright leaves a pastel pink
 rather than angry, and travelling the whole way collapses the tone set. The eye
 endpoint is then pushed until every point along the mix clears 4.5:1.
@@ -563,7 +697,7 @@ endpoint is then pushed until every point along the mix clears 4.5:1.
 **Every point, not both ends.** A straight line in OKLab between two passing
 pairs is not itself a passing pair — the body travels further than the eye, so
 the two lightnesses can close on each other in the middle of a 420ms transition
-that is perfectly legible at both stops. `hot()` walks the mix and fixes the
+that is perfectly legible at both stops. `tinted()` walks the mix and fixes the
 worst point; `test/color.test.ts` verifies it at 1° hue resolution, six tones and
 eleven heats, and separately that a tinted body still clears 1.5:1 against a
 near-black page.
