@@ -69,7 +69,7 @@ const nameNote = "// everything below comes from the name unless it is pinned";
 
 export function snippet({ api, name, pinned, motion }: SnippetInput): string {
   const traits = entries(pinned);
-  const seed = name || "blobatar";
+  const seed = name || "sketchy";
 
   return api === "react"
     ? react(seed, traits, motion)
