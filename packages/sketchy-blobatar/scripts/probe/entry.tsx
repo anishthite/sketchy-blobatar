@@ -788,6 +788,26 @@ async function checkDirections() {
  * against the geometry the engine paints, which is the thing under test.
  */
 async function checkBlink() {
+  /**
+   * Each case mounts directly into a non-idle expression. Two frames make the
+   * SVG available, but do not finish its 300ms pose transition. Freezing there
+   * made this check sample a different in-between transform depending on the
+   * engine's frame scheduling, which is not the settled pose H is meant to
+   * verify. Use the stylesheet's own longest transition plus a small frame
+   * margin so a changed motion rate stays covered too.
+   */
+  const settlePose = (root: Element) => {
+    const durations = getComputedStyle(root).transitionDuration
+      .split(",")
+      .map((value) => {
+        const amount = Number.parseFloat(value);
+        return amount * (value.trim().endsWith("ms") ? 1 : 1000);
+      });
+    return new Promise<void>((resolve) =>
+      setTimeout(resolve, Math.max(...durations, 0) + 50),
+    );
+  };
+
   /** The painted box of one eye path, from `elementFromPoint` hits alone. */
   const painted = (el: Element, box: DOMRect) => {
     let x0 = Infinity;
@@ -826,6 +846,7 @@ async function checkBlink() {
     await frame();
     await frame();
     const svg = host.querySelector("svg")!;
+    await settlePose(svg.querySelector(".mo-root")!);
     const shape = svg.querySelector(".mo-eye > *")!;
     const anims = svg.getAnimations({ subtree: true });
     for (const a of anims) a.pause();
