@@ -57,22 +57,22 @@ export interface BlobatarOptions {
   /**
    * Idle animation. Off by default.
    *
-   * Requires `import "blobatar/motion.css"`, and requires the blobatar to be
+   * Requires `import "sketchy-blobatar/motion.css"`, and requires the blobatar to be
    * inline SVG — content inside an `<img>` is an isolated document that hover
-   * cannot reach. `blobatar/react` switches rendering mode for you; the string
+   * cannot reach. `sketchy-blobatar/react` switches rendering mode for you; the string
    * API is already inline.
    *
-   * **Honored by `blobatar/react` only, for now.** `blobatar()` returns static
+   * **Honored by `sketchy-blobatar/react` only, for now.** `blobatar()` returns static
    * markup regardless: a branch on `animate` inside it keeps the motion module
    * alive for every caller, animating or not, which measured at ~190 B. An
    * animated string API wants its own entry point, not a branch here.
    */
   animate?: Animate;
   /**
-   * Which pose the blobatar holds. Import one from `blobatar/expression`.
+   * Which pose the blobatar holds. Import one from `sketchy-blobatar/expression`.
    *
    * ```ts
-   * import { happy } from "blobatar/expression";
+   * import { happy } from "sketchy-blobatar/expression";
    * blobatar(name, { expression: happy });
    * ```
    *

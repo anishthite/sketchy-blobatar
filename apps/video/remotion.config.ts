@@ -5,7 +5,7 @@ import path from "node:path";
 // CJS, where `import.meta` is empty. It also only finds this config when run
 // from the app directory, so the cwd is `apps/video` by the time it is read.
 const src = (f: string) =>
-  path.resolve(process.cwd(), "../../packages/blobatar/src", f);
+  path.resolve(process.cwd(), "../../packages/sketchy-blobatar/src", f);
 
 Config.setVideoImageFormat("jpeg");
 Config.setChromiumOpenGlRenderer("angle");
@@ -15,8 +15,9 @@ Config.setChromiumOpenGlRenderer("angle");
  * types, and this is what the bundler resolves at render time. Both lists have
  * to say the same thing.
  *
- * `$` on each key is exact-match: without it `blobatar/react` would resolve
- * through the `blobatar` alias and land on a directory that does not exist.
+ * `$` on each key is exact-match: without it `sketchy-blobatar/react` would
+ * resolve through the `sketchy-blobatar` alias and land on a directory that
+ * does not exist.
  */
 Config.overrideWebpackConfig((current) => ({
   ...current,
@@ -24,13 +25,13 @@ Config.overrideWebpackConfig((current) => ({
     ...current.resolve,
     alias: {
       ...current.resolve?.alias,
-      "blobatar$": src("index.ts"),
-      "blobatar/blob$": src("blob.ts"),
-      "blobatar/uri$": src("uri.ts"),
-      "blobatar/expression$": src("expression.ts"),
-      "blobatar/react$": src("react.tsx"),
-      "blobatar/animate$": src("animate.ts"),
-      "blobatar/motion.css$": src("motion.css"),
+      "sketchy-blobatar$": src("index.ts"),
+      "sketchy-blobatar/blob$": src("blob.ts"),
+      "sketchy-blobatar/uri$": src("uri.ts"),
+      "sketchy-blobatar/expression$": src("expression.ts"),
+      "sketchy-blobatar/react$": src("react.tsx"),
+      "sketchy-blobatar/animate$": src("animate.ts"),
+      "sketchy-blobatar/motion.css$": src("motion.css"),
     },
   },
 }));

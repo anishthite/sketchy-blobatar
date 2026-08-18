@@ -6,7 +6,7 @@ import { App } from "./src/App";
 // Imported *before* the page's own stylesheet, and the order is load-bearing:
 // `styles.css` cancels the library's hover reaction, and both rules are
 // unlayered and equally specific, so the later file is the one that wins.
-import "blobatar/motion.css";
+import "sketchy-blobatar/motion.css";
 import "./styles.css";
 
 // `<Analytics />` renders nothing — it injects Vercel's `/_vercel/insights`

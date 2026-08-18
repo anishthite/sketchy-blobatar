@@ -81,13 +81,13 @@ function react(
   traits: (readonly [string, number])[],
   motion: Motion,
 ) {
-  const lines = [`import { Blobatar } from "blobatar/react";`];
+  const lines = [`import { Blobatar } from "sketchy-blobatar/react";`];
   // The trade the library documents, stated where it is taken rather than in
   // prose beside the box: animating is what moves the blobatar out of a single
   // `<img>` and into a dozen inline SVG nodes.
   if (motion)
     lines.push(
-      `import "blobatar/motion.css"; // animate renders inline SVG, not one <img>`,
+      `import "sketchy-blobatar/motion.css"; // animate renders inline SVG, not one <img>`,
     );
 
   lines.push("");
@@ -118,14 +118,14 @@ function string(
   traits: (readonly [string, number])[],
   motion: Motion,
 ) {
-  const lines = [`import { blobatar } from "blobatar";`, ""];
+  const lines = [`import { blobatar } from "sketchy-blobatar";`, ""];
 
-  // `animate` is honored by `blobatar/react` only — the string API returns
+  // `animate` is honored by `sketchy-blobatar/react` only — the string API returns
   // static markup whatever it is passed. Dropping it silently on the way over
   // would make this snippet a quieter blobatar than the one on screen, so it is
   // dropped out loud.
   if (motion)
-    lines.push(`// animate is a blobatar/react option — this renders static markup`);
+    lines.push(`// animate is a sketchy-blobatar/react option — this renders static markup`);
   if (traits.length) lines.push(nameNote);
 
   // Named `seed` here where the component takes `name`: same value, and the

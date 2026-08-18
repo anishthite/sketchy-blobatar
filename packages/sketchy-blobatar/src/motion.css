@@ -3,7 +3,7 @@
  *
  * Import once, anywhere:
  *
- *   import "blobatar/motion.css";
+ *   import "sketchy-blobatar/motion.css";
  *
  * Only blobatars rendered with `animate` set carry these classes, so importing
  * this without using `animate` costs the stylesheet and nothing else.
@@ -291,7 +291,7 @@
  * transition is symmetric in both directions for nothing.
  *
  * The attribute stays in the markup and is not dead weight: it is what an app
- * that forgot `import "blobatar/motion.css"` renders, and it is what the static
+ * that forgot `import "sketchy-blobatar/motion.css"` renders, and it is what the static
  * path — which has no stylesheet at all — has always used.
  *
  * The outline has an explicit class because an SVG `fill="none"` must survive

@@ -132,11 +132,11 @@ consumer and is not gated at all. A blobatar can be sad and still breathing.
 
 **Package**:
 A workspace member under `packages/` — publishable. Currently just
-`blobatar` itself.
+`sketchy-blobatar` itself.
 
 **App**:
 A workspace member under `apps/` — never published, and always consumes
-`blobatar` through its public `exports` map rather than by relative path.
+`sketchy-blobatar` through its public `exports` map rather than by relative path.
 
 **Site**:
 The public landing page (`apps/site`). Static, dark-only, editorial.

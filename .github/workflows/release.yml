@@ -31,21 +31,21 @@ jobs:
       - run: bun install --frozen-lockfile
 
       - name: Tests
-        run: bun --filter blobatar test
+        run: bun --filter sketchy-blobatar test
 
       - name: Size budgets
-        run: bun --filter blobatar size
+        run: bun --filter sketchy-blobatar size
 
       - name: Build
-        run: bun --filter blobatar build
+        run: bun --filter sketchy-blobatar build
 
       - name: Smoke the built package
-        run: bun --filter blobatar smoke
+        run: bun --filter sketchy-blobatar smoke
 
       - name: Refuse to publish a tag that disagrees with package.json
         run: |
           tag="${GITHUB_REF_NAME#v}"
-          pkg=$(node -p "require('./packages/blobatar/package.json').version")
+          pkg=$(node -p "require('./packages/sketchy-blobatar/package.json').version")
           if [ "$tag" != "$pkg" ]; then
             echo "tag v$tag does not match package.json $pkg" >&2
             exit 1
@@ -54,6 +54,6 @@ jobs:
 
       # npm, not bun: `bun publish` does not yet emit provenance attestations.
       - name: Publish
-        run: npm publish --workspace blobatar --provenance --access public
+        run: npm publish --workspace sketchy-blobatar --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -21,7 +21,7 @@ export type Shape = "round" | "organic" | "boxy" | "nub" | "cloud" | "sun";
 /**
  * Each shape as the position in [0, 1) that selects it.
  *
- * **Copied from `packages/blobatar/test/traits.test.ts`**, under "every shape in
+ * **Copied from `packages/sketchy-blobatar/test/traits.test.ts`**, under "every shape in
  * the vocabulary is reachable by band midpoint", rather than derived from
  * `shapeOf`'s thresholds. The bands are frozen per major but their boundaries
  * are exactly where a retune would land, and a copy means that retune fails a

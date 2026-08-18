@@ -7,7 +7,7 @@
     "check": "true"
   },
   "dependencies": {
-    "blobatar": "workspace:*",
+    "sketchy-blobatar": "workspace:*",
     "react": "^19",
     "react-dom": "^19"
   },

@@ -18,7 +18,7 @@
  * constant that already cannot move within a major. If it moves anyway, the
  * ghost drifts; nothing renders wrong and nothing throws.
  */
-import { _layout, type Traits } from "blobatar";
+import { _layout, type Traits } from "sketchy-blobatar";
 
 /**
  * `_layout` returns a union across variants and `shape` discriminates it.

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 import { NAMES, shuffled } from "@/names";
 import { useNearViewport } from "@/lib/near-viewport";
 

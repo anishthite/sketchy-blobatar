@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { blobatar } from "blobatar";
+import { blobatar } from "sketchy-blobatar";
 import { snippet, type Api } from "./snippet";
 import { KEY_ORDER, round3 } from "./axes";
 
@@ -91,9 +91,9 @@ describe("what it emits", () => {
     const string = snippet({ api: "string", name: NAME, pinned: {}, motion: false });
 
     expect(react).toContain(`name="${NAME}"`);
-    expect(react).toContain(`from "blobatar/react"`);
+    expect(react).toContain(`from "sketchy-blobatar/react"`);
     expect(string).toContain(`blobatar("${NAME}")`);
-    expect(string).toContain(`from "blobatar"`);
+    expect(string).toContain(`from "sketchy-blobatar"`);
   });
 
   test("a name that cannot be written as a JSX attribute becomes an expression", () => {
@@ -105,17 +105,17 @@ describe("what it emits", () => {
 
   test("animating says so, in the import as well as the prop", () => {
     const code = snippet({ api: "react", name: NAME, pinned: {}, motion: "hover" });
-    expect(code).toContain(`import "blobatar/motion.css"`);
+    expect(code).toContain(`import "sketchy-blobatar/motion.css"`);
     expect(code).toContain(`animate="hover"`);
     expect(code).toContain("inline SVG");
   });
 
   test("the string API drops `animate` out loud rather than silently", () => {
     // `blobatar()` returns static markup whatever it is passed — animation is a
-    // `blobatar/react` option. Emitting it would be a snippet that lies.
+    // `sketchy-blobatar/react` option. Emitting it would be a snippet that lies.
     const code = snippet({ api: "string", name: NAME, pinned: {}, motion: "always" });
     expect(code).not.toContain("animate:");
-    expect(code).toContain("// animate is a blobatar/react option");
+    expect(code).toContain("// animate is a sketchy-blobatar/react option");
   });
 
   test("an empty name falls back rather than emitting nothing", () => {

@@ -493,11 +493,11 @@ with the existing `trait independence` test.
 Inlining a `<style>` block per SVG is simpler DX but duplicates the same
 keyframes N times — roughly 80KB of redundant CSS across a 400-blobatar grid.
 
-Ship `blobatar/motion.css` instead. The consumer imports it once; each SVG
+Ship `sketchy-blobatar/motion.css` instead. The consumer imports it once; each SVG
 carries only class names and two custom properties.
 
 ```ts
-import "blobatar/motion.css";
+import "sketchy-blobatar/motion.css";
 ```
 
 Document the import as required. A silently non-animating blobatar because someone
@@ -508,7 +508,7 @@ the stylesheet is absent.
 
 `"sideEffects": false` is currently set. That is a standing promise to bundlers
 that no module in this package does anything but export values, which licenses
-webpack and Rollup to **delete `import "blobatar/motion.css"` outright**. The
+webpack and Rollup to **delete `import "sketchy-blobatar/motion.css"` outright**. The
 result is the silently-non-animating blobatar above, except it happens to everyone
 who ships through a bundler rather than to the one person who forgot a line.
 
@@ -677,7 +677,7 @@ removing it costs the user nothing.
 
 | Entry                        | Budget (gz)                                                                                                                                                                                                          |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `blobatar/motion.css`       | 950 B — **at 923 B with seven layers in.** Was 700, raised to 800 for saccades (§4.6) and to 950 for wrap (§4.7). Raise it again rather than shaving comments out of the stylesheet; this file is paid once per app. |
+| `sketchy-blobatar/motion.css` | 950 B — **at 923 B with seven layers in.** Was 700, raised to 800 for saccades (§4.6) and to 950 for wrap (§4.7). Raise it again rather than shaving comments out of the stylesheet; this file is paid once per app. |
 | `blobatar/motion` (gaze JS) | 900 B                                                                                                                                                                                                                |
 | Static output byte count     | **unchanged**                                                                                                                                                                                                        |
 | `blob only` JS               | **unchanged**                                                                                                                                                                                                        |

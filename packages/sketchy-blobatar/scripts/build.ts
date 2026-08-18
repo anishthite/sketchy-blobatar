@@ -4,7 +4,7 @@
  * `exports` in package.json points at `dist`, because what goes to npm has to
  * be JS a plain Node resolver and a non-transpiling bundler can both read. This
  * script produces it. (The workspace apps do not wait on it — they alias
- * `blobatar/*` to `src` through tsconfig paths.)
+ * `sketchy-blobatar/*` to `src` through tsconfig paths.)
  *
  * Each entry is bundled standalone. Code splitting is the obvious way to stop
  * `blob` and the barrel carrying private copies of the same renderer, and it

@@ -23,7 +23,7 @@ const ENTRIES: {
   ext?: string;
 }[] = [
   {
-    // Expressions are passed in as values from `blobatar/expression`, so a
+    // Expressions are passed in as values from `sketchy-blobatar/expression`, so a
     // consumer who never imports one carries no pose code at all — see the
     // "blob + happy" entry below for what one costs. Held tight deliberately:
     // this is the number that catches the option creeping back into the core.
@@ -111,7 +111,7 @@ const ENTRIES: {
              globalThis.x = Blobatar;`,
   },
   {
-    // The point of `blobatar/expression` being its own entry: importing one
+    // The point of `sketchy-blobatar/expression` being its own entry: importing one
     // expression must not drag the other three in. Measured against "blob only"
     // above — the delta is what a single pose actually costs.
     // Measured: +343 B for the first expression (the shared serializer and bake,

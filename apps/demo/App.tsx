@@ -4,10 +4,10 @@ import {
   traits,
   type Animate,
   type BlobatarOptions,
-} from "blobatar";
-import { layout } from "blobatar/blob";
-import { happy, idle, mad, sad, type Expression } from "blobatar/expression";
-import { Blobatar } from "blobatar/react";
+} from "sketchy-blobatar";
+import { layout } from "sketchy-blobatar/blob";
+import { happy, idle, mad, sad, type Expression } from "sketchy-blobatar/expression";
+import { Blobatar } from "sketchy-blobatar/react";
 
 /**
  * The tuning harness.

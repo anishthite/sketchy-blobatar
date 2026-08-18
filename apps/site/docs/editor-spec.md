@@ -5,7 +5,7 @@ that reproduces it.
 
 The library side is finished and shipped — `traits` is a real option, tested and
 budgeted. This is entirely an `apps/site` job. Nothing here should require a
-change to `packages/blobatar`; if you find one, that is a finding worth raising
+change to `packages/sketchy-blobatar`; if you find one, that is a finding worth raising
 rather than a change to make quietly, because the package's ranges are frozen per
 major and its size gate is tight.
 
@@ -61,7 +61,7 @@ so a route needs a client-side decision, not a server change.
 ## The API it drives
 
 ```tsx
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 
 <Blobatar name={name} traits={overrides} animate="hover" />;
 ```
@@ -84,7 +84,7 @@ library with a bad number, so you do not need defensive code around the sliders.
 ### Reading back what actually happened
 
 ```ts
-import { _layout } from "blobatar";
+import { _layout } from "sketchy-blobatar";
 const l = _layout(name, { traits });
 ```
 
@@ -136,7 +136,7 @@ actually drag them, and finding that out is part of the job:
 | Decoration         | shape-conditional — see below                     |
 
 The six shape band midpoints are pinned in
-`packages/blobatar/test/traits.test.ts` under "every shape in the vocabulary is
+`packages/sketchy-blobatar/test/traits.test.ts` under "every shape in the vocabulary is
 reachable by band midpoint". **Copy them from there rather than deriving them**,
 so that retuning the bands fails a test instead of silently moving every config
 anyone saved.
@@ -177,7 +177,7 @@ that look designed. Try both.
 The whole point. It should look like something a person would have written:
 
 ```tsx
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 
 <Blobatar
   name={user.email}
@@ -202,7 +202,7 @@ Rules:
 - **Offer the string-API form too.** `blobatar(seed, { traits })` — and remember
   that one takes `seed` where the component takes `name`. A segmented control
   between the two is cheap and the Hero has the precedent for the pattern.
-- **`animate="hover"` needs `import "blobatar/motion.css"`.** The Hero's snippet
+- **`animate="hover"` needs `import "sketchy-blobatar/motion.css"`.** The Hero's snippet
   includes it. If the editor's preview animates, the snippet must say so, and it
   should mention that animating changes the rendering mode from one `<img>` to
   inline SVG.
@@ -251,18 +251,18 @@ inline-SVG rendering mode.
 - `bun run check` stays green from the repo root. The site's `check` is currently
   `true`, so this is a low bar; consider whether the snippet generator deserves a
   real test, since it is the one piece with a correctness property worth pinning.
-- No diff under `packages/blobatar/`.
+- No diff under `packages/sketchy-blobatar/`.
 
 ## Reference
 
 | File                                                | Why                                      |
 | --------------------------------------------------- | ---------------------------------------- |
 | `docs/adr/0003-configuration-as-trait-overrides.md` | Why the API is this shape                |
-| `packages/blobatar/src/styles/blob.ts`              | Every trait key, its range, its meaning  |
-| `packages/blobatar/src/traits.ts`                   | The override seam and its clamp          |
-| `packages/blobatar/README.md` § Configuring         | The consumer-facing account              |
-| `packages/blobatar/test/traits.test.ts`             | Shape band midpoints; `blobLayout` helper |
-| `packages/blobatar/test/keys.ts`                    | The full blob trait keyspace, as a list  |
+| `packages/sketchy-blobatar/src/styles/blob.ts`      | Every trait key, its range, its meaning  |
+| `packages/sketchy-blobatar/src/traits.ts`           | The override seam and its clamp          |
+| `packages/sketchy-blobatar/README.md` § Configuring | The consumer-facing account              |
+| `packages/sketchy-blobatar/test/traits.test.ts`     | Shape band midpoints; `blobLayout` helper |
+| `packages/sketchy-blobatar/test/keys.ts`            | The full blob trait keyspace, as a list  |
 | `apps/site/src/components/Hero.tsx`                 | The existing panel and `snippet()`       |
 | `CONTEXT.md`                                        | Vocabulary — Name vs Seed, Override      |
 

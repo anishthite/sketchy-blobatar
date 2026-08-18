@@ -1,16 +1,16 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    // `blobatar/*` aliases resolve the library from source rather than through
+    // `sketchy-blobatar/*` aliases resolve the library from source rather than through
     // its `exports`, which point at built JS. See `apps/demo/tsconfig.json`.
     "paths": {
       "@/*": ["./src/*"],
-      "blobatar": ["../../packages/blobatar/src/index.ts"],
-      "blobatar/blob": ["../../packages/blobatar/src/blob.ts"],
-      "blobatar/uri": ["../../packages/blobatar/src/uri.ts"],
-      "blobatar/expression": ["../../packages/blobatar/src/expression.ts"],
-      "blobatar/react": ["../../packages/blobatar/src/react.tsx"],
-      "blobatar/motion.css": ["../../packages/blobatar/src/motion.css"]
+      "sketchy-blobatar": ["../../packages/sketchy-blobatar/src/index.ts"],
+      "sketchy-blobatar/blob": ["../../packages/sketchy-blobatar/src/blob.ts"],
+      "sketchy-blobatar/uri": ["../../packages/sketchy-blobatar/src/uri.ts"],
+      "sketchy-blobatar/expression": ["../../packages/sketchy-blobatar/src/expression.ts"],
+      "sketchy-blobatar/react": ["../../packages/sketchy-blobatar/src/react.tsx"],
+      "sketchy-blobatar/motion.css": ["../../packages/sketchy-blobatar/src/motion.css"]
     }
   },
   "include": ["."]

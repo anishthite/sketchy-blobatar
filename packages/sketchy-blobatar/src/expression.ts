@@ -1,5 +1,5 @@
 /**
- * Expressions — `blobatar/expression`. See docs/expression-spec.md.
+ * Expressions — `sketchy-blobatar/expression`. See docs/expression-spec.md.
  *
  * An expression is a named pose the consumer sets and the library holds. It is
  * a separate axis from the idle loop in `animate.ts`: idle motion is ambient and

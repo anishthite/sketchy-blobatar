@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Blobatar } from "blobatar/react";
-import type { BlobatarOptions } from "blobatar";
+import { Blobatar } from "sketchy-blobatar/react";
+import type { BlobatarOptions } from "sketchy-blobatar";
 import {
   bashful,
   excited,
@@ -11,7 +11,7 @@ import {
   sleepy,
   suspicious,
   type Expression,
-} from "blobatar/expression";
+} from "sketchy-blobatar/expression";
 import { Segmented, SegmentedItem } from "@/components/ui/segmented";
 import {
   Popover,
@@ -136,9 +136,9 @@ function snippet(
 ) {
   const posed = pose.value !== idle;
 
-  const imports = [`import { Blobatar } from "blobatar/react";`];
-  if (posed) imports.push(`import { ${pose.name} } from "blobatar/expression";`);
-  imports.push(`import "blobatar/motion.css";`);
+  const imports = [`import { Blobatar } from "sketchy-blobatar/react";`];
+  if (posed) imports.push(`import { ${pose.name} } from "sketchy-blobatar/expression";`);
+  imports.push(`import "sketchy-blobatar/motion.css";`);
 
   // Only what differs from the defaults. A snippet that restates every default
   // reads as configuration you are obliged to supply, which is the opposite of
@@ -666,7 +666,7 @@ export function Hero() {
           a command pill as wide as the snippet stops reading as a thing you
           press.
         */}
-        <Install command="bun add blobatar" className="self-start" />
+        <Install command="bun add sketchy-blobatar" className="self-start" />
 
         <div className="flex flex-col gap-3">
           <div className="text-muted flex items-baseline justify-between text-xs lowercase">

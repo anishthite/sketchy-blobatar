@@ -17,9 +17,9 @@ import { existsSync, readFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { blobatar, palette, traits, normalizeSeed } from "blobatar";
-import { blobatar as blob } from "blobatar/blob";
-import { blobatarUri } from "blobatar/uri";
+import { blobatar, palette, traits, normalizeSeed } from "sketchy-blobatar";
+import { blobatar as blob } from "sketchy-blobatar/blob";
+import { blobatarUri } from "sketchy-blobatar/uri";
 import {
   bashful,
   excited,
@@ -29,8 +29,8 @@ import {
   sad,
   sleepy,
   suspicious,
-} from "blobatar/expression";
-import { Blobatar } from "blobatar/react";
+} from "sketchy-blobatar/expression";
+import { Blobatar } from "sketchy-blobatar/react";
 
 let failed = false;
 
@@ -109,7 +109,7 @@ check("blobatar/react animated", () => {
  * itself is the assertion. See the `define` in `scripts/build.ts`.
  */
 check("blobatar/react ships the production JSX runtime", () => {
-  const path = createRequire(import.meta.url).resolve("blobatar/react");
+  const path = createRequire(import.meta.url).resolve("sketchy-blobatar/react");
   const src = readFileSync(path, "utf8");
   assert(
     !src.includes("jsx-dev-runtime") && !src.includes("jsxDEV"),
@@ -133,7 +133,7 @@ check("determinism", () => {
 });
 
 check("blobatar/motion.css", () => {
-  const path = createRequire(import.meta.url).resolve("blobatar/motion.css");
+  const path = createRequire(import.meta.url).resolve("sketchy-blobatar/motion.css");
   assert(existsSync(path), `resolved to a file that does not exist: ${path}`);
   return path.split("/").slice(-2).join("/");
 });

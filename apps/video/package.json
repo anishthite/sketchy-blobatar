@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@remotion/cli": "^4.0.512",
-    "blobatar": "workspace:*",
+    "sketchy-blobatar": "workspace:*",
     "react": "^19",
     "react-dom": "^19",
     "remotion": "^4.0.512"

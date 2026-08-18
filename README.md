@@ -1,10 +1,10 @@
-# blobatar
+# sketchy-blobatar
 
 Deterministic outlined blobatars from any string. No dependencies, ~4 KB
 gzipped.
 
 ```sh
-bun add blobatar    # npm / pnpm / yarn all work too
+bun add sketchy-blobatar    # npm / pnpm / yarn all work too
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ renders the same blobatar.
 ### React
 
 ```tsx
-import { Blobatar } from "blobatar/react";
+import { Blobatar } from "sketchy-blobatar/react";
 
 <Blobatar name={user.email} size={48} />;
 ```
@@ -31,8 +31,8 @@ element, so `className`, `alt` and the rest behave as you would expect.
 `data:` URI for `<img src>` or `background-image`:
 
 ```ts
-import { blobatar } from "blobatar";
-import { blobatarUri } from "blobatar/uri";
+import { blobatar } from "sketchy-blobatar";
+import { blobatarUri } from "sketchy-blobatar/uri";
 
 blobatar("alain@example.com"); // '<svg xmlns="..." viewBox="0 0 100 100">…'
 
@@ -43,7 +43,7 @@ The main entry also carries the palette and trait utilities. If all you do is
 render, import the renderer on its own and save about a kilobyte:
 
 ```ts
-import { blobatar } from "blobatar/blob";
+import { blobatar } from "sketchy-blobatar/blob";
 ```
 
 ### Configuring
@@ -72,9 +72,9 @@ Both are opt-in. `animate` idles the blobatar — breathe, bob, blink, glance �
 and expressions are imported as values so you ship only the poses you use:
 
 ```tsx
-import { Blobatar } from "blobatar/react";
-import { happy } from "blobatar/expression";
-import "blobatar/motion.css"; // required — nothing animates without it
+import { Blobatar } from "sketchy-blobatar/react";
+import { happy } from "sketchy-blobatar/expression";
+import "sketchy-blobatar/motion.css"; // required — nothing animates without it
 
 <Blobatar name={user.email} animate="hover" expression={happy} size={64} />;
 ```
@@ -83,13 +83,13 @@ import "blobatar/motion.css"; // required — nothing animates without it
 animated one is inline SVG. Use `"hover"` in a grid and `"always"` for the
 single-blobatar case. Motion respects `prefers-reduced-motion`.
 
-**[Full docs — options table, guarantees, and how it works →](./packages/blobatar/README.md)**
+**[Full docs — options table, guarantees, and how it works →](./packages/sketchy-blobatar/README.md)**
 
 ## Workspace
 
 | Path                | What it is                                               |
 | ------------------- | -------------------------------------------------------- |
-| `packages/blobatar` | The library. [Docs here](./packages/blobatar/README.md). |
+| `packages/sketchy-blobatar` | The library. [Docs here](./packages/sketchy-blobatar/README.md). |
 | `apps/site`         | The landing page. Static, dark-only.                     |
 | `apps/demo`         | The tuning grid — the internal design tool, not a demo.  |
 
