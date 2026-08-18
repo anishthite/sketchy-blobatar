@@ -1,6 +1,14 @@
 import { motionVars, rootClass, type Animate } from "./animate";
 import type { Palette } from "./color";
 import type { Expression } from "./expression";
+export type {
+  AccessoryChoice,
+  Accessories,
+  BlobatarAccessories,
+  Eyewear,
+  Headwear,
+  Wearable,
+} from "./accessories";
 import {
   makeBlobatar,
   makeParts,
@@ -91,7 +99,7 @@ export function _parts(name: string, opts: BlobatarOptions = {}) {
  */
 export function _layout(name: string, opts: BlobatarOptions = {}) {
   const { t, palette } = resolve(name, opts);
-  const l = blob.layout(t, opts.variant);
+  const l = blob.layout(t, opts.variant, opts.accessories);
   // Posed here rather than by the caller, so the geometry tests assert against
   // the same numbers the static renderer draws. Only the baked half comes back:
   // the body-level `transform` is the renderer's business, and the test that

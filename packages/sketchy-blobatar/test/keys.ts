@@ -41,4 +41,8 @@ export const BLOB_KEYS = [
   "nub.a1",
   "nub.r0",
   "nub.r1",
+  "accessory.headwear",
+  "accessory.eyewear",
+  "accessory.wearable",
+  "accessory.set",
 ];

@@ -304,6 +304,21 @@
   transition: stroke var(--mo-morph) var(--mo-morph-ease);
 }
 
+/* Accessories keep the same ink transition as the outlined creature. */
+.mo-accessories {
+  stroke: var(--mo-head);
+  color: var(--mo-head);
+  transition:
+    stroke var(--mo-morph) var(--mo-morph-ease),
+    color var(--mo-morph) var(--mo-morph-ease);
+}
+
+/* Filled blobatars use their contrasting face colour for accessory outlines. */
+.mo-accessories.mo-original-accessories {
+  stroke: var(--mo-eye);
+  color: var(--mo-eye);
+}
+
 .mo-eyes:not(.mo-original-eyes) {
   fill: var(--mo-head);
   stroke: var(--mo-head);

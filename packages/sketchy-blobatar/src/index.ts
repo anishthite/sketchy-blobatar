@@ -6,6 +6,14 @@ export {
   type BlobatarOptions,
   type Expression,
 } from "./blobatar";
+export type {
+  AccessoryChoice,
+  Accessories,
+  BlobatarAccessories,
+  Eyewear,
+  Headwear,
+  Wearable,
+} from "./accessories";
 export {
   palette,
   ramp,

@@ -65,7 +65,11 @@ const ENTRIES: {
     // share traits, palette resolution and animation plumbing; the 182 B is the
     // alternate drawing branch and preserves a migration path for existing art.
     name: "blob only",
-    budget: 4250,
+    // Hats, glasses and wearables are a genuinely optional output feature, but
+    // their geometry has to remain available to a runtime `accessories` value.
+    // The 1 KB allowance covers the six rounded outlined drawings without
+    // introducing a second palette or a dependency.
+    budget: 5300,
     external: [] as string[],
     source: `import { blobatar } from "../../src/blob";
              globalThis.x = blobatar(String(globalThis.seed));`,
@@ -74,14 +78,14 @@ const ENTRIES: {
     // The barrel. Costs more than `blob only` above because it also carries the
     // colour and trait utilities, which a consumer who only renders never touches.
     name: "barrel",
-    budget: 4250,
+    budget: 5300,
     external: [],
     source: `import { blobatar } from "../../src/index";
              globalThis.x = blobatar(String(globalThis.seed));`,
   },
   {
     name: "uri",
-    budget: 4350,
+    budget: 5400,
     external: [],
     source: `import { blobatarUri } from "../../src/uri";
              globalThis.x = blobatarUri(String(globalThis.seed));`,
@@ -105,7 +109,7 @@ const ENTRIES: {
     // or not, so the stylesheet's `fill` rules always resolve to something
     // correct — a `var()` with nothing behind it makes `fill` inherit black.
     name: "react",
-    budget: 5250,
+    budget: 6300,
     external: ["react"],
     source: `import { Blobatar } from "../../src/react";
              globalThis.x = Blobatar;`,
@@ -117,7 +121,7 @@ const ENTRIES: {
     // Measured: +343 B for the first expression (the shared serializer and bake,
     // paid once) and +36 B for each one after it. Importing all three is 4098.
     name: "blob + happy",
-    budget: 4600,
+    budget: 5650,
     external: [],
     source: `import { blobatar } from "../../src/blob";
              import { happy } from "../../src/expression";
@@ -178,7 +182,7 @@ const ENTRIES: {
     // registered custom properties, which recalculate on the main thread
     // rather than compositing. A grid that reads as a crowd is the case this
     // library invites, so that is the case worth being cheap in.
-    budget: 1450,
+    budget: 1500,
     external: [],
     ext: "css",
     source: `@import "../../src/motion.css";`,

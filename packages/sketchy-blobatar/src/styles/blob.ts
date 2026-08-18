@@ -1,5 +1,6 @@
 import type { Palette } from "../color";
 import type { BlobatarVariant } from "../render";
+import { resolveAccessories, type Accessories } from "../accessories";
 import { arc, blobPath, roughSuperellipse, superellipse } from "../shape";
 import type { Traits } from "../traits";
 
@@ -59,7 +60,11 @@ const WOBBLE: Record<Shape, number> = {
   nub: 0.11,
 };
 
-export function layout(t: Traits, variant: BlobatarVariant = "outlined") {
+export function layout(
+  t: Traits,
+  variant: BlobatarVariant = "outlined",
+  accessoryOptions?: Accessories,
+) {
   const shape = shapeOf(t("shape"));
   const r = t.num("body.r", 31, 38) * CORE[shape];
   const rx = r;
@@ -207,6 +212,7 @@ export function layout(t: Traits, variant: BlobatarVariant = "outlined") {
     shape,
     body,
     petals,
+    accessories: resolveAccessories(t, accessoryOptions),
     eyes: [
       {
         cx: body.cx + gx - gap,
@@ -234,6 +240,73 @@ export function layout(t: Traits, variant: BlobatarVariant = "outlined") {
 }
 
 export type Layout = ReturnType<typeof layout>;
+
+/** Two-decimal user units are sub-pixel at normal avatar sizes and keep SVGs compact. */
+const r2 = (v: number) => Math.round(v * 100) / 100;
+
+/**
+ * Accessory geometry is deliberately expressed relative to the resolved body,
+ * rather than a fixed 100×100 template. A hat therefore still sits on a small
+ * sun core and a scarf still clears a tall organic body.
+ */
+function accessoryArt(l: Layout, p: Palette): string {
+  const a = l.accessories;
+  if (!a) return "";
+
+  const b = l.body;
+  const x = b.cx;
+  const hatBrim = b.cy - b.ry * 0.48;
+  const hatTop = b.cy - b.ry * 0.93;
+  // Small accessories borrow the body’s hand-drawn contour instead of dropping
+  // suddenly into sharp geometry. The five uneven points are enough to feel
+  // soft at avatar scale without making a glasses lens look like a new blob.
+  const soft = (cx: number, cy: number, rx: number, ry: number) =>
+    blobPath(cx, cy, rx, ry, [1.02, 0.94, 1.04, 0.92, 0.98]);
+
+  const headwear =
+    a.headwear === "beanie"
+      ? `<circle cx="${r2(x)}" cy="${r2(hatTop - b.ry * 0.03)}" r="${r2(b.rx * 0.09)}"/>` +
+        `<path d="M${r2(x - b.rx * 0.62)} ${r2(hatBrim)}C${r2(x - b.rx * 0.54)} ${r2(hatTop)} ${r2(x - b.rx * 0.23)} ${r2(hatTop - b.ry * 0.08)} ${r2(x)} ${r2(hatTop - b.ry * 0.08)}C${r2(x + b.rx * 0.23)} ${r2(hatTop - b.ry * 0.08)} ${r2(x + b.rx * 0.54)} ${r2(hatTop)} ${r2(x + b.rx * 0.62)} ${r2(hatBrim)}M${r2(x - b.rx * 0.68)} ${r2(hatBrim)}Q${r2(x)} ${r2(hatBrim + b.ry * 0.11)} ${r2(x + b.rx * 0.68)} ${r2(hatBrim)}M${r2(x)} ${r2(hatTop + b.ry * 0.12)}Q${r2(x + b.rx * 0.06)} ${r2(hatBrim - b.ry * 0.04)} ${r2(x + b.rx * 0.1)} ${r2(hatBrim)}"/>`
+      : a.headwear === "cap"
+        ? `<path d="M${r2(x - b.rx * 0.6)} ${r2(hatBrim)}C${r2(x - b.rx * 0.48)} ${r2(hatTop + b.ry * 0.08)} ${r2(x - b.rx * 0.12)} ${r2(hatTop - b.ry * 0.04)} ${r2(x + b.rx * 0.24)} ${r2(hatTop + b.ry * 0.08)}C${r2(x + b.rx * 0.42)} ${r2(hatTop + b.ry * 0.15)} ${r2(x + b.rx * 0.53)} ${r2(hatTop + b.ry * 0.31)} ${r2(x + b.rx * 0.56)} ${r2(hatBrim)}M${r2(x - b.rx * 0.58)} ${r2(hatBrim)}Q${r2(x + b.rx * 0.18)} ${r2(hatBrim + b.ry * 0.1)} ${r2(x + b.rx * 0.82)} ${r2(hatBrim + b.ry * 0.02)}M${r2(x - b.rx * 0.04)} ${r2(hatTop + b.ry * 0.11)}Q${r2(x + b.rx * 0.1)} ${r2(hatTop + b.ry * 0.31)} ${r2(x + b.rx * 0.16)} ${r2(hatBrim - b.ry * 0.06)}"/>`
+        : "";
+
+  const frame = (e: Layout["eyes"][number], i: number) => {
+    const sunglasses = a.eyewear === "sunglasses";
+    const rx = e.rx * (sunglasses ? 1.55 : 1.1);
+    const ry = Math.max(e.rx * (sunglasses ? 1.18 : 0.9), e.ry * (sunglasses ? 0.34 : 0.28));
+    if (a.eyewear === "round")
+      return `<ellipse cx="${r2(e.cx)}" cy="${r2(e.cy)}" rx="${r2(rx)}" ry="${r2(ry)}"/>`;
+
+    if (sunglasses) {
+      const tilt = i ? 0.8 : -0.8;
+      return `<path d="${soft(e.cx, e.cy + tilt, rx, ry * 1.08)}" fill="${p.eye}"/>`;
+    }
+
+    return "";
+  };
+
+  const eyewear =
+    a.eyewear
+      ? frame(l.eyes[0]!, 0) +
+        frame(l.eyes[1]!, 1) +
+        `<path d="M${r2(l.eyes[0]!.cx + l.eyes[0]!.rx * (a.eyewear === "sunglasses" ? 1.55 : 1.1))} ${r2(l.eyes[0]!.cy)}Q${r2(x)} ${r2(b.cy - b.ry * 0.02)} ${r2(l.eyes[1]!.cx - l.eyes[1]!.rx * (a.eyewear === "sunglasses" ? 1.55 : 1.1))} ${r2(l.eyes[1]!.cy)}"/>`
+      : "";
+
+  const neck = b.cy + b.ry * 0.64;
+  const wearable =
+    a.wearable === "bowtie"
+      ? `<path d="M${r2(x - b.rx * 0.07)} ${r2(neck)}C${r2(x - b.rx * 0.2)} ${r2(neck - b.ry * 0.2)} ${r2(x - b.rx * 0.49)} ${r2(neck - b.ry * 0.17)} ${r2(x - b.rx * 0.55)} ${r2(neck - b.ry * 0.04)}C${r2(x - b.rx * 0.59)} ${r2(neck + b.ry * 0.13)} ${r2(x - b.rx * 0.31)} ${r2(neck + b.ry * 0.22)} ${r2(x - b.rx * 0.07)} ${r2(neck)}Z" fill="currentColor"/>` +
+        `<path d="M${r2(x + b.rx * 0.07)} ${r2(neck)}C${r2(x + b.rx * 0.2)} ${r2(neck - b.ry * 0.2)} ${r2(x + b.rx * 0.49)} ${r2(neck - b.ry * 0.17)} ${r2(x + b.rx * 0.55)} ${r2(neck - b.ry * 0.04)}C${r2(x + b.rx * 0.59)} ${r2(neck + b.ry * 0.13)} ${r2(x + b.rx * 0.31)} ${r2(neck + b.ry * 0.22)} ${r2(x + b.rx * 0.07)} ${r2(neck)}Z" fill="currentColor"/>` +
+        `<circle cx="${r2(x)}" cy="${r2(neck)}" r="${r2(b.rx * 0.11)}"/>`
+      : a.wearable === "scarf"
+        ? `<path d="M${r2(x - b.rx * 0.58)} ${r2(neck - b.ry * 0.12)}Q${r2(x)} ${r2(neck + b.ry * 0.08)} ${r2(x + b.rx * 0.58)} ${r2(neck - b.ry * 0.12)}L${r2(x + b.rx * 0.54)} ${r2(neck + b.ry * 0.1)}Q${r2(x)} ${r2(neck + b.ry * 0.29)} ${r2(x - b.rx * 0.54)} ${r2(neck + b.ry * 0.1)}Z" fill="currentColor"/>` +
+          `<path d="M${r2(x + b.rx * 0.17)} ${r2(neck + b.ry * 0.1)}C${r2(x + b.rx * 0.29)} ${r2(neck + b.ry * 0.23)} ${r2(x + b.rx * 0.39)} ${r2(neck + b.ry * 0.36)} ${r2(x + b.rx * 0.45)} ${r2(neck + b.ry * 0.48)}L${r2(x + b.rx * 0.16)} ${r2(neck + b.ry * 0.4)}Q${r2(x + b.rx * 0.25)} ${r2(neck + b.ry * 0.24)} ${r2(x + b.rx * 0.17)} ${r2(neck + b.ry * 0.1)}Z" fill="currentColor"/>`
+        : "";
+
+  if (!headwear && !eyewear && !wearable) return "";
+  return `<g class="accessories">${headwear}${eyewear}${wearable}</g>`;
+}
 
 /**
  * `mo` is set when animating, and absent otherwise — so the static path emits
@@ -265,8 +338,6 @@ export function render(
       ? blobPath(b.cx, b.cy, b.rx, b.ry, b.radii, l.shape === "cloud" ? 0 : b.rot, 2)
       : superellipse(b)
     : roughSuperellipse(b, b.radii);
-
-  const r2 = (v: number) => Math.round(v * 100) / 100;
 
   // `--mo-wrap` is which side of the face this eye is on: -1 left, +1 right. The
   // wrap layer needs to treat the two eyes differently — the one leading into a
@@ -381,9 +452,17 @@ export function render(
     )}" fill="none"/>` +
       `</g>`;
 
+  const art = accessoryArt(l, p);
+  // The accessory layer uses the same ink and rounded caps as the creature.
+  // In the filled legacy variant its contrast face colour keeps the outline
+  // visible against a head that is itself solid `p.head`.
+  const accessories = art
+    ? `<g fill="none" stroke="${original ? p.eye : p.head}" color="${original ? p.eye : p.head}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${mo ? ` class="${original ? "mo-accessories mo-original-accessories" : "mo-accessories"}"` : ""}>${art}</g>`
+    : "";
+
   return mo
-    ? `<g class="mo-breathe"><g class="mo-bob">${body}</g></g>`
-    : body;
+    ? `<g class="mo-breathe"><g class="mo-bob">${body}${accessories}</g></g>`
+    : body + accessories;
 }
 
 /**
