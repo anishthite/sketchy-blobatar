@@ -69,6 +69,15 @@ _Avoid_: custom blobatar, static blobatar. _Static_ already means "not animated"
 A position in the frozen swatch set for `blob`, expressible as 0–1. Distinct
 from `hue`, which is an absolute angle in degrees.
 
+**Accessories**:
+Optional decorative layers — headwear, eyewear, and wearables — drawn in the
+same rounded outlined vocabulary and palette as the blobatar. Omitted means no
+accessories, preserving every existing render. A `"seeded"` set derives one
+signature piece, and an `"auto"` slot derives its item from a category-specific
+trait; an exact item is a caller choice. Accessories are decoration, not
+silhouette: they never alter the body, eyes, expression, or name-derived
+identity beneath them.
+
 **Rendering mode**:
 Static blobatars are a single `<img>`; animated ones are inline SVG of roughly a
 dozen nodes. `animate` selects between them — the two cannot be combined,

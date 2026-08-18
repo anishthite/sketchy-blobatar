@@ -2,6 +2,14 @@ import { makeBlobatar, type BlobatarOptions, type BlobatarVariant } from "./rend
 import * as style from "./styles/blob";
 
 export type { BlobatarOptions, BlobatarVariant };
+export type {
+  AccessoryChoice,
+  Accessories,
+  BlobatarAccessories,
+  Eyewear,
+  Headwear,
+  Wearable,
+} from "./accessories";
 export type { Shape } from "./styles/blob";
 export type { TraitOverrides } from "./traits";
 

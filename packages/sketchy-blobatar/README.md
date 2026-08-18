@@ -1,6 +1,6 @@
 # sketchy-blobatar
 
-Deterministic outlined blobatars from any string. No dependencies, ~4 KB gzipped.
+Deterministic outlined blobatars from any string. No dependencies, ~5 KB gzipped.
 
 ```ts
 import { blobatar } from "sketchy-blobatar";
@@ -49,6 +49,28 @@ the same name-derived silhouette and palette, set `variant` to `"original"`:
 <Blobatar name={user.email} variant="original" size={48} />;
 ```
 
+## Accessories
+
+Accessories are optional, deterministic line art in the same palette and
+rounded-outline vocabulary as the blobatar. Existing blobatars stay unchanged
+until you ask for them. `"seeded"` chooses one signature piece from the name;
+use the three slots to choose an exact look instead:
+
+```tsx
+<Blobatar
+  name={user.email}
+  accessories={{
+    headwear: "beanie", // or "cap" or "auto"
+    eyewear: "round", // or "sunglasses" or "auto"
+    wearables: "scarf", // or "bowtie" or "auto"
+  }}
+/>
+```
+
+Set a slot to `false` when composing a configuration and you want to suppress
+it. `auto` reads a category-specific trait from the name, so it is stable for
+that name and does not reshuffle the body or face.
+
 ## What it guarantees
 
 **Determinism.** The same name always renders the same blobatar within a major
@@ -83,6 +105,7 @@ several hundred blobatars on one page cannot produce id collisions.
 | `hue`        | —           | Locks hue in degrees; the name then drives shape only.                 |
 | `tone`       | —           | Locks the swatch as a 0–1 position in the set.                          |
 | `variant`    | `"outlined"` | `"original"` restores the filled treatment.                          |
+| `accessories` | —          | `"seeded"` or exact headwear, eyewear, and wearable choices.            |
 | `traits`     | —           | Pins individual traits as 0–1 positions. See below.                    |
 | `palette`    | —           | Per-key hex overrides. Bypasses the contrast guarantee.                 |
 | `normalize`  | `true`      | NFC + trim + lowercase.                                                 |
